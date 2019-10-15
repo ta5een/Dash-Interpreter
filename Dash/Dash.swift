@@ -10,6 +10,8 @@ import Foundation
 
 class Dash {
     
+    static var errorFound: Bool = false
+    
     static func startInterpreter(withArgs args: [String]) throws {
         if args.isEmpty {
             self.runPrompt()
@@ -31,7 +33,7 @@ class Dash {
     }
     
     static func runPrompt() {
-        print("Dash Interpreter v0.1")
+        print("Dash REPL v0.1")
         
         while true {
             print("> ", terminator: "")
@@ -47,6 +49,11 @@ class Dash {
     
     private static func run(fromSource source: String) {
         print(source)
+    }
+    
+    private static func reportError(location: String, message: String) {
+        print("[\(location)] Error: \(message)")
+        self.errorFound = true
     }
     
 }
