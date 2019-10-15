@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		039CB0842355FDF5002D6F59 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB0832355FDF5002D6F59 /* main.swift */; };
+		039CB08B23560048002D6F59 /* Dash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08A23560048002D6F59 /* Dash.swift */; };
+		039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08C235607E7002D6F59 /* SysArgs.swift */; };
+		039CB08F235608D2002D6F59 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08E235608D2002D6F59 /* Errors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,9 @@
 /* Begin PBXFileReference section */
 		039CB0802355FDF5002D6F59 /* Dash */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Dash; sourceTree = BUILT_PRODUCTS_DIR; };
 		039CB0832355FDF5002D6F59 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		039CB08A23560048002D6F59 /* Dash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dash.swift; sourceTree = "<group>"; };
+		039CB08C235607E7002D6F59 /* SysArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysArgs.swift; sourceTree = "<group>"; };
+		039CB08E235608D2002D6F59 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +44,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03943BCE23560AD9008AEC9E /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				039CB08E235608D2002D6F59 /* Errors.swift */,
+				039CB08C235607E7002D6F59 /* SysArgs.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		039CB0772355FDF5002D6F59 = {
 			isa = PBXGroup;
 			children = (
@@ -57,6 +72,8 @@
 		039CB0822355FDF5002D6F59 /* Dash */ = {
 			isa = PBXGroup;
 			children = (
+				03943BCE23560AD9008AEC9E /* Utilities */,
+				039CB08A23560048002D6F59 /* Dash.swift */,
 				039CB0832355FDF5002D6F59 /* main.swift */,
 			);
 			path = Dash;
@@ -120,7 +137,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				039CB08F235608D2002D6F59 /* Errors.swift in Sources */,
 				039CB0842355FDF5002D6F59 /* main.swift in Sources */,
+				039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */,
+				039CB08B23560048002D6F59 /* Dash.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
