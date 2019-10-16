@@ -8,18 +8,15 @@
 
 import Foundation
 
-class Expr {}
+protocol Visitor {
+    associatedtype R
+    
+    func visitBinaryExpr(expr: BinaryExpr) -> Self.R
+    func visitGroupingExpr(expr: GroupingExpr) -> Self.R
+    func visitLiteralExpr(expr: LiteralExpr) -> Self.R
+    func visitUnaryExpr(expr: UnaryExpr) -> Self.R
+}
 
-class Binary: Expr {
-    
-    let left: Expr
-    let `operator`: Token
-    let right: Expr
-    
-    init(left: Expr, operator: Token, right: Expr) {
-        self.left = left
-        self.operator = `operator`
-        self.right = right
-    }
-    
+protocol Expr {
+    func accept<V: Visitor, R>(visitor: V) -> R where V.R == R
 }
