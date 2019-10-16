@@ -45,6 +45,11 @@ class Dash {
         while true {
             print("\n> ", terminator: "")
             if let readLine = readLine() {
+                guard readLine != "$exit" else {
+                    print("\nExiting...")
+                    break
+                }
+                
                 self.errorFound = false
                 self.run(fromSource: readLine)
             } else {
