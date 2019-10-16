@@ -55,17 +55,31 @@ class Scanner {
         case "<":   self.addToken(type: (self.nextTokenMatches("=") ? .lessEqual : .less))
         case ">":   self.addToken(type: (self.nextTokenMatches("=") ? .greaterEqual : .greater))
             
-        case "#":   while self.peek() != "\n" && !self.isAtEnd { _ = self.advance() }
+        case "#":   while self.peek() != "\n" && !self.isAtEnd { self.advance() }
             
         case "\n":  self.line += 1
         case "", " ", "\r", "\t": break
             
-        case "\"":  self.startString(fromIndex: self.current - 1)
+        case "\"":  self.string(fromIndex: self.current - 1)
+        case let n where n.rangeOfCharacter(from: .decimalDigits) != nil: self.number(fromIndex: self.current - 1)
+        case let a where (a.rangeOfCharacter(from: .alphanumerics) != nil) || a == "_": self.identifier(fromIndex: self.current - 1)
         
         case let char:
             Dash.reportError(location: (self.line, self.current - 1), message: "Unexpected character: '\(char)'")
         }
     }
+    
+    func addToken(type: TokenType, literal: LiteralType? = nil) {
+        self.tokens.append(Token(withType: type,
+                                 lexeme: self.source[self.start ..< self.current],
+                                 literal: literal,
+                                 line: self.line))
+    }
+    
+}
+
+// MARK: - Matching
+extension Scanner {
     
     func nextTokenMatches(_ expected: String) -> Bool {
         if self.isAtEnd { return false }
@@ -76,6 +90,7 @@ class Scanner {
     }
     
     // FIXME: Perhaps find a way to to return a `Character` instead?
+    @discardableResult
     func advance() -> String {
         self.current += 1
         return self.source[self.current - 1]
@@ -86,13 +101,23 @@ class Scanner {
         return self.source[self.current]
     }
     
-    func startString(fromIndex index: Int) {
+    func peekNext() -> String {
+        if ((self.current + 1) >= self.source.count) { return "\0" }
+        return self.source[self.current + 1]
+    }
+    
+}
+
+// MARK: - Literals
+extension Scanner {
+    
+    func string(fromIndex index: Int) {
         while self.peek() != "\"" && !self.isAtEnd {
             if (self.peek() == "\n") {
                 self.line += 1
             }
             
-            _ = self.advance()
+            self.advance()
         }
         
         if self.isAtEnd {
@@ -100,18 +125,43 @@ class Scanner {
             return
         }
         
-        // The closing `"`
-        _ = self.advance()
+        // Capture the closing `"`
+        self.advance()
         
-        // Trim the surrounding quotes
-        self.addToken(type: .string, literal: self.source[(self.start + 1) ..< self.current - 1])
+        // Trim the surrounding quotes and add token
+        self.addToken(type: .literal(.string), literal: self.source[(self.start + 1) ..< self.current - 1])
     }
     
-    func addToken(type: TokenType, literal: Literal? = nil) {
-        self.tokens.append(Token(withType: type,
-                                 lexeme: self.source[self.start ..< self.current],
-                                 literal: literal,
-                                 line: self.line))
+    func number(fromIndex index: Int) {
+        func peekAndAdvance() {
+            while self.peek().rangeOfCharacter(from: .decimalDigits) != nil {
+                self.advance()
+            }
+        }
+        
+        peekAndAdvance()
+        
+        // Look for fractional part
+        if self.peek() == "." && (self.peekNext().rangeOfCharacter(from: .decimalDigits) != nil) {
+            self.advance()
+            peekAndAdvance()
+        }
+        
+        self.addToken(type: .literal(.number), literal: Double(self.source[self.start ..< self.current]))
+    }
+    
+    func identifier(fromIndex index: Int) {
+        while (self.peek().rangeOfCharacter(from: .alphanumerics) != nil) || self.peek() == "_" {
+            self.advance()
+        }
+        
+        // See if identifier is reserved word
+        let text = self.source[self.start ..< self.current]
+        if let type = TokenType.keyword(fromString: text) {
+            self.addToken(type: type)
+        } else {
+            self.addToken(type: .literal(.identifier))
+        }
     }
     
 }
