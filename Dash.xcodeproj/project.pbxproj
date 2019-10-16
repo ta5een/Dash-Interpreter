@@ -11,6 +11,9 @@
 		039CB08B23560048002D6F59 /* Dash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08A23560048002D6F59 /* Dash.swift */; };
 		039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08C235607E7002D6F59 /* SysArgs.swift */; };
 		039CB08F235608D2002D6F59 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08E235608D2002D6F59 /* Errors.swift */; };
+		03D9EF232356C08E009BC05A /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF222356C08E009BC05A /* Scanner.swift */; };
+		03D9EF252356C09F009BC05A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF242356C09F009BC05A /* Token.swift */; };
+		03D9EF272356CA23009BC05A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF262356CA23009BC05A /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +34,9 @@
 		039CB08A23560048002D6F59 /* Dash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dash.swift; sourceTree = "<group>"; };
 		039CB08C235607E7002D6F59 /* SysArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysArgs.swift; sourceTree = "<group>"; };
 		039CB08E235608D2002D6F59 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		03D9EF222356C08E009BC05A /* Scanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
+		03D9EF242356C09F009BC05A /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		03D9EF262356CA23009BC05A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +54,7 @@
 			isa = PBXGroup;
 			children = (
 				039CB08E235608D2002D6F59 /* Errors.swift */,
+				03D9EF262356CA23009BC05A /* Extensions.swift */,
 				039CB08C235607E7002D6F59 /* SysArgs.swift */,
 			);
 			name = Utilities;
@@ -72,11 +79,21 @@
 		039CB0822355FDF5002D6F59 /* Dash */ = {
 			isa = PBXGroup;
 			children = (
+				03D9EF212356C077009BC05A /* Common */,
 				03943BCE23560AD9008AEC9E /* Utilities */,
 				039CB08A23560048002D6F59 /* Dash.swift */,
 				039CB0832355FDF5002D6F59 /* main.swift */,
 			);
 			path = Dash;
+			sourceTree = "<group>";
+		};
+		03D9EF212356C077009BC05A /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				03D9EF222356C08E009BC05A /* Scanner.swift */,
+				03D9EF242356C09F009BC05A /* Token.swift */,
+			);
+			name = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,7 +157,10 @@
 				039CB08F235608D2002D6F59 /* Errors.swift in Sources */,
 				039CB0842355FDF5002D6F59 /* main.swift in Sources */,
 				039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */,
+				03D9EF252356C09F009BC05A /* Token.swift in Sources */,
+				03D9EF232356C08E009BC05A /* Scanner.swift in Sources */,
 				039CB08B23560048002D6F59 /* Dash.swift in Sources */,
+				03D9EF272356CA23009BC05A /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
