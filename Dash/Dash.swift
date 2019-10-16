@@ -17,18 +17,25 @@ class Dash {
             self.runPrompt()
         } else {
             let sysArgs = try SysArgs(parse: args)
-            print("Input source: \(sysArgs!.inputSource)")
+            
+            if let inputSource = sysArgs?.inputSource {
+                switch inputSource {
+                case .stdin:
+                    self.runPrompt()
+                case .file(let path):
+                    print("\u{001B}[1;36mInput source: \(inputSource)\u{001B}[0;0m")
+                    self.runFile(fromPath: path)
+                }
+            }
         }
     }
     
     static func runFile(fromPath path: String) {
-        if let dir = FileManager.default.urls(for: .userDirectory, in: .userDomainMask).first {
-            let url = dir.appendingPathComponent(path)
-            do {
-                self.run(fromSource: try String(contentsOf: url, encoding: .utf8))
-            } catch {
-                print(error.localizedDescription)
-            }
+        let url = URL(fileURLWithPath: path)
+        do {
+            self.run(fromSource: try String(contentsOf: url, encoding: .utf8))
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
@@ -36,23 +43,29 @@ class Dash {
         print("Dash REPL v0.1")
         
         while true {
-            print("> ", terminator: "")
+            print("\n> ", terminator: "")
             if let readLine = readLine() {
+                self.errorFound = false
                 self.run(fromSource: readLine)
             } else {
-                print("{EOF}")
-                print("Exiting...")
+                print("\u{001B}[1;30m{EOF}\u{001B}[0;0m")
+                print("\nExiting...")
                 break
             }
         }
     }
     
     private static func run(fromSource source: String) {
-        print(source)
+        Scanner(fromSource: source).scanTokens().forEach { token in
+            print("\u{001B}[1;32m\(token)\u{001B}[0;0m")
+        }
+        
+//        if self.errorFound { exit(EXIT_FAILURE) }
     }
     
-    private static func reportError(location: String, message: String) {
-        print("[\(location)] Error: \(message)")
+    static func reportError(location: (Int, Int), message: String) {
+        print("\u{001B}[1;31m[\(location.0):\(location.1)] Error: \(message)\u{001B}[0;0m")
+        
         self.errorFound = true
     }
     

@@ -26,9 +26,9 @@ extension SysArgsError: LocalizedError {
     }
     
     private func constructMessage(error message: String, help: String? = nil) -> String {
-        let msg = "\t[error]:\t\(message)"
+        let msg = "\u{001B}[1;31m  [error]:\u{001B}[0;0m \(message)"
         if let help = help {
-            return msg + "\n\t [help]:\t\(help)"
+            return msg + "\n\u{001B}[1;34m   [help]:\u{001B}[0;0m \(help)"
         } else {
             return msg
         }
