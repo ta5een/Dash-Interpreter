@@ -31,33 +31,34 @@ class Scanner {
             self.scan()
         }
         
-        self.tokens.append(Token(withType: .eof, lexeme: "", literal: nil, line: self.line))
+//        self.tokens.append(Token(withType: .eof, lexeme: "", literal: nil, line: self.line))
+        self.addToken(type: .eof, lexeme: "", literal: nil)
         return self.tokens
     }
     
     func scan() {
         switch self.advance() {
-        case "(":   self.addToken(type: .leftParen)
-        case ")":   self.addToken(type: .rightParen)
-        case "{":   self.addToken(type: .leftBrace)
-        case "}":   self.addToken(type: .rightParen)
+        case "(":   self.addToken(type: .char(.leftParen))
+        case ")":   self.addToken(type: .char(.rightParen))
+        case "{":   self.addToken(type: .char(.leftBrace))
+        case "}":   self.addToken(type: .char(.rightParen))
         
-        case "*":   self.addToken(type: .asterisk)
-        case ",":   self.addToken(type: .comma)
-        case ".":   self.addToken(type: .dot)
-        case "-":   self.addToken(type: .minus)
-        case "+":   self.addToken(type: .plus)
-        case ";":   self.addToken(type: .semicolon)
-        case "/":   self.addToken(type: .slash)
+        case "*":   self.addToken(type: .char(.asterisk))
+        case ",":   self.addToken(type: .char(.comma))
+        case ".":   self.addToken(type: .char(.dot))
+        case "-":   self.addToken(type: .char(.minus))
+        case "+":   self.addToken(type: .char(.plus))
+        case ";":   self.addToken(type: .char(.semicolon))
+        case "/":   self.addToken(type: .char(.slash))
             
-        case "!":   self.addToken(type: (self.nextTokenMatches("=") ? .bangEqual : .bang))
-        case "=":   self.addToken(type: (self.nextTokenMatches("=") ? .equalEqual : .equal))
-        case "<":   self.addToken(type: (self.nextTokenMatches("=") ? .lessEqual : .less))
-        case ">":   self.addToken(type: (self.nextTokenMatches("=") ? .greaterEqual : .greater))
+        case "!":   self.addToken(type: (self.nextTokenMatches("=") ? .char(.bangEqual) : .char(.bang)))
+        case "=":   self.addToken(type: (self.nextTokenMatches("=") ? .char(.equalEqual) : .char(.equal)))
+        case "<":   self.addToken(type: (self.nextTokenMatches("=") ? .char(.lessEqual) : .char(.less)))
+        case ">":   self.addToken(type: (self.nextTokenMatches("=") ? .char(.greaterEqual) : .char(.greater)))
             
         case "#":   while self.peek() != "\n" && !self.isAtEnd { self.advance() }
-            
-        case "\n":  self.line += 1
+        
+        case "\n":  self.newLine()
         case "", " ", "\r", "\t": break
             
         case "\"":  self.string(fromIndex: self.current - 1)
@@ -69,9 +70,9 @@ class Scanner {
         }
     }
     
-    func addToken(type: TokenType, literal: LiteralType? = nil) {
+    func addToken(type: TokenType, lexeme: String? = nil, literal: LiteralType? = nil) {
         self.tokens.append(Token(withType: type,
-                                 lexeme: self.source[self.start ..< self.current],
+                                 lexeme: lexeme ?? self.source[self.start ..< self.current],
                                  literal: literal,
                                  line: self.line))
     }
@@ -110,6 +111,11 @@ extension Scanner {
 
 // MARK: - Literals
 extension Scanner {
+    
+    func newLine() {
+        self.addToken(type: .newline, lexeme: "\\n", literal: "\\n")
+        self.line += 1
+    }
     
     func string(fromIndex index: Int) {
         while self.peek() != "\"" && !self.isAtEnd {

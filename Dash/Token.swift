@@ -10,6 +10,14 @@ import Foundation
 
 typealias LiteralType = Any
 
+enum Char {
+    /// Single-character tokens
+    case leftBrace, rightBrace, leftParen, rightParen, asterisk, comma, dot, minus, plus, semicolon, slash
+    
+    /// One or two characters literals
+    case bang, bangEqual, equal, equalEqual, greater, greaterEqual, less, lessEqual
+}
+
 enum Keyword {
     case and, `class`, dbg, `else`, `false`, fun, `for`, `if`, nothing, or, `return`, `self`, `super`, then,
         `true`, `var`, `while`
@@ -20,17 +28,16 @@ enum Literal {
 }
 
 enum TokenType {
-    /// Single-character tokens
-    case leftBrace, rightBrace, leftParen, rightParen, asterisk, comma, dot, minus, plus, semicolon, slash
-    
-    /// One or two characters literals
-    case bang, bangEqual, equal, equalEqual, greater, greaterEqual, less, lessEqual
+    /// Char tokens
+    case char(Char)
     
     /// Keywords
     case keyword(Keyword)
     
     /// Literals
     case literal(Literal)
+    
+    case newline
     
     /// End of file
     case eof
@@ -78,9 +85,9 @@ extension Token: CustomStringConvertible {
     
     var description: String {
         if let literal = self.literal {
-            return "Token(type: \(self.type), lexeme: '\(self.lexeme)', literal: \(literal))"
+            return "Token(type: \(self.type), lexeme: '\(self.lexeme)', literal: \(literal), line: \(self.line))"
         } else {
-            return "Token(type: \(self.type), lexeme: '\(self.lexeme)')"
+            return "Token(type: \(self.type), lexeme: '\(self.lexeme)', line: \(self.line))"
         }
     }
     
