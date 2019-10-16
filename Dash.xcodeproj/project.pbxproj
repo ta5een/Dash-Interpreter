@@ -29,6 +29,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0318A9292357024D00C3CBD4 /* Grammar.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Grammar.md; sourceTree = "<group>"; };
 		039CB0802355FDF5002D6F59 /* Dash */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Dash; sourceTree = BUILT_PRODUCTS_DIR; };
 		039CB0832355FDF5002D6F59 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		039CB08A23560048002D6F59 /* Dash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dash.swift; sourceTree = "<group>"; };
@@ -50,6 +51,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0318A9282357023300C3CBD4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0318A9292357024D00C3CBD4 /* Grammar.md */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		03943BCE23560AD9008AEC9E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +88,7 @@
 		039CB0822355FDF5002D6F59 /* Dash */ = {
 			isa = PBXGroup;
 			children = (
+				0318A9282357023300C3CBD4 /* Resources */,
 				03D9EF212356C077009BC05A /* Common */,
 				03943BCE23560AD9008AEC9E /* Utilities */,
 				039CB08A23560048002D6F59 /* Dash.swift */,
