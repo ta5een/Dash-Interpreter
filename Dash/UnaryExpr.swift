@@ -9,7 +9,6 @@
 import Foundation
 
 class UnaryExpr: Expr {
-    
     let `operator`: Token
     let right: Expr
     
@@ -18,8 +17,7 @@ class UnaryExpr: Expr {
         self.right = right
     }
     
-    func accept<V: Visitor, R>(visitor: V) -> R where V.R == R {
-        return visitor.visitUnaryExpr(expr: self)
-    }
-    
+    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R {
+        return try visitor.visitUnaryExpr(expr: self)
+    }    
 }

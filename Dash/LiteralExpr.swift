@@ -11,21 +11,18 @@ import Foundation
 typealias LiteralExprValue = CustomStringConvertible
 
 class LiteralExpr: Expr {
-    
     let value: LiteralExprValue?
     
     init(withValue value: LiteralExprValue?) {
         self.value = value
     }
     
-    func accept<V: Visitor, R>(visitor: V) -> R where V.R == R {
-        return visitor.visitLiteralExpr(expr: self)
+    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R {
+        return try visitor.visitLiteralExpr(expr: self)
     }
-    
 }
 
 extension LiteralExpr: CustomStringConvertible {
-    
     var description: String {
         if let value = self.value {
             return value.description
@@ -33,5 +30,4 @@ extension LiteralExpr: CustomStringConvertible {
             return "nothing"
         }
     }
-    
 }

@@ -46,8 +46,8 @@ extension ParseError: LocalizedError {
 extension RuntimeError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .invalidOperand(expected: let expected):
-            return constructMessage(error: "Operand must be a \(expected)")
+        case .invalidOperand(token: let token, message: let message):
+            return constructMessage(error: "Unexpected operand `\(token.literal ?? "nothing")`. \(message).")
         }
     }
 }

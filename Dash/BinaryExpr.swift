@@ -9,7 +9,6 @@
 import Foundation
 
 class BinaryExpr: Expr {
-    
     let left: Expr
     let `operator`: Token
     let right: Expr
@@ -20,8 +19,7 @@ class BinaryExpr: Expr {
         self.right = right
     }
     
-    func accept<V: Visitor, R>(visitor: V) -> R where R == V.R {
-        return visitor.visitBinaryExpr(expr: self)
+    func accept<V: Visitor, R>(visitor: V) throws -> R where R == V.R {
+        return try visitor.visitBinaryExpr(expr: self)
     }
-    
 }

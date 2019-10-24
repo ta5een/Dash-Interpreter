@@ -9,15 +9,13 @@
 import Foundation
 
 class GroupingExpr: Expr {
-    
     let expression: Expr
     
     init(withExpression expression: Expr) {
         self.expression = expression
     }
     
-    func accept<V: Visitor, R>(visitor: V) -> R where V.R == R {
-        return visitor.visitGroupingExpr(expr: self)
+    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R {
+        return try visitor.visitGroupingExpr(expr: self)
     }
-    
 }

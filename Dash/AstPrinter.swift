@@ -9,39 +9,35 @@
 import Foundation
 
 class AstPrinter {
-    
-    func print(expr: Expr) -> String {
-        return expr.accept(visitor: self)
+    func print(expr: Expr) throws -> String {
+        return try expr.accept(visitor: self)
     }
     
-    func parenthesise(name: String, exprs: Expr...) -> String {
+    func parenthesise(name: String, exprs: Expr...) throws -> String {
         var string = "(\(name)"
-        exprs.forEach { expr in string.append(" \(expr.accept(visitor: self))") }
+        try exprs.forEach { expr in string.append(" \(try expr.accept(visitor: self))") }
         string.append(")")
         
         return string
     }
-    
 }
 
 extension AstPrinter: Visitor {
-
     typealias R = String
 
-    func visitBinaryExpr(expr: BinaryExpr) -> R {
-        return self.parenthesise(name: expr.operator.lexeme, exprs: expr.left, expr.right)
+    func visitBinaryExpr(expr: BinaryExpr) throws -> R {
+        return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.left, expr.right)
     }
 
-    func visitGroupingExpr(expr: GroupingExpr) -> R {
-        return self.parenthesise(name: "group", exprs: expr.expression)
+    func visitGroupingExpr(expr: GroupingExpr) throws -> R {
+        return try self.parenthesise(name: ":", exprs: expr.expression)
     }
 
-    func visitLiteralExpr(expr: LiteralExpr) -> R {
+    func visitLiteralExpr(expr: LiteralExpr) throws -> R {
         return expr.description
     }
 
-    func visitUnaryExpr(expr: UnaryExpr) -> R {
-        return self.parenthesise(name: expr.operator.lexeme, exprs: expr.right)
+    func visitUnaryExpr(expr: UnaryExpr) throws -> R {
+        return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.right)
     }
-
 }

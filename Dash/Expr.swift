@@ -11,12 +11,12 @@ import Foundation
 protocol Visitor {
     associatedtype R
     
-    func visitBinaryExpr(expr: BinaryExpr) -> R
-    func visitGroupingExpr(expr: GroupingExpr) -> R
-    func visitLiteralExpr(expr: LiteralExpr) -> R
-    func visitUnaryExpr(expr: UnaryExpr) -> R
+    func visitBinaryExpr(expr: BinaryExpr) throws -> R
+    func visitGroupingExpr(expr: GroupingExpr) throws -> R
+    func visitLiteralExpr(expr: LiteralExpr) throws -> R
+    func visitUnaryExpr(expr: UnaryExpr) throws -> R
 }
 
 protocol Expr {
-    func accept<V: Visitor, R>(visitor: V) -> R where V.R == R
+    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R
 }
