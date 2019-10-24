@@ -28,19 +28,19 @@ extension AstPrinter: Visitor {
 
     typealias R = String
 
-    func visitBinaryExpr(expr: BinaryExpr) -> String {
+    func visitBinaryExpr(expr: BinaryExpr) -> R {
         return self.parenthesise(name: expr.operator.lexeme, exprs: expr.left, expr.right)
     }
 
-    func visitGroupingExpr(expr: GroupingExpr) -> String {
+    func visitGroupingExpr(expr: GroupingExpr) -> R {
         return self.parenthesise(name: "group", exprs: expr.expression)
     }
 
-    func visitLiteralExpr(expr: LiteralExpr) -> String {
+    func visitLiteralExpr(expr: LiteralExpr) -> R {
         return expr.description
     }
 
-    func visitUnaryExpr(expr: UnaryExpr) -> String {
+    func visitUnaryExpr(expr: UnaryExpr) -> R {
         return self.parenthesise(name: expr.operator.lexeme, exprs: expr.right)
     }
 
