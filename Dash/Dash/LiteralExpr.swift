@@ -8,9 +8,9 @@
 
 import Foundation
 
+typealias LiteralExprValue = CustomStringConvertible
+
 class LiteralExpr: Expr {
-    
-    typealias LiteralExprValue = CustomStringConvertible
     
     let value: LiteralExprValue?
     

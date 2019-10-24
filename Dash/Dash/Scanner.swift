@@ -31,7 +31,7 @@ class Scanner {
             self.scan()
         }
         
-//        self.tokens.append(Token(withType: .eof, lexeme: "", literal: nil, line: self.line))
+        // self.tokens.append(Token(withType: .eof, lexeme: "", literal: nil, line: self.line))
         self.addToken(type: .eof, lexeme: "", literal: nil)
         return self.tokens
     }

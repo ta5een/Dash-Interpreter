@@ -8,20 +8,6 @@
 
 import Foundation
 
-let expr = BinaryExpr(
-    left: UnaryExpr(withOperator: Token(withType: .char(.minus),
-                                        lexeme: "-",
-                                        literal: nil,
-                                        line: 1),
-                    rightExpr: LiteralExpr(withValue: 123)),
-    operator: Token(withType: .char(.asterisk),
-                    lexeme: "*",
-                    literal: nil,
-                    line: 1),
-    right: GroupingExpr(withExpression: LiteralExpr(withValue: 45.67)))
-
-print(AstPrinter().print(expr: expr))
-
 do {
     try Dash.startInterpreter(withArgs: Array(CommandLine.arguments[1...]))
 } catch {

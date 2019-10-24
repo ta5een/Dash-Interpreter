@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias LiteralType = Any
+typealias LiteralType = LiteralExprValue
 
 enum Char {
     /// Single-character tokens
@@ -63,6 +63,27 @@ enum TokenType {
         default:        return nil
         }
     }
+}
+
+extension TokenType: Equatable {
+    
+    static func ==(lhs: TokenType, rhs: TokenType) -> Bool {
+        switch (lhs, rhs) {
+        case (let .char(left), let .char(right)):
+            return left == right
+        case (let .keyword(left), let .keyword(right)):
+            return left == right
+        case (let .literal(left), let .literal(right)):
+            return left == right
+        case (.newline, .newline):
+            return true
+        case (.eof, .eof):
+            return true
+        default:
+            return false
+        }
+    }
+    
 }
 
 class Token {

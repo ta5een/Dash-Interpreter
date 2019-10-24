@@ -61,11 +61,13 @@ class Dash {
     }
     
     private static func run(fromSource source: String) {
-        Scanner(fromSource: source).scanTokens().forEach { token in
-            print("\u{001B}[1;32m\(token)\u{001B}[0;0m")
+        let tokens = Scanner(fromSource: source).scanTokens()
+        let parser = Parser(withTokens: tokens)
+        if let expr = parser.parse() {
+            print(AstPrinter().print(expr: expr))
         }
         
-//        if self.errorFound { exit(EXIT_FAILURE) }
+        if self.errorFound { return }
     }
     
     static func reportError(location: (Int, Int), message: String) {
