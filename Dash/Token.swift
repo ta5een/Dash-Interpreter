@@ -66,7 +66,6 @@ enum TokenType {
 }
 
 extension TokenType: Equatable {
-    
     static func ==(lhs: TokenType, rhs: TokenType) -> Bool {
         switch (lhs, rhs) {
         case (let .char(left), let .char(right)):
@@ -83,11 +82,9 @@ extension TokenType: Equatable {
             return false
         }
     }
-    
 }
 
 class Token {
-    
     let type: TokenType
     let lexeme: String
     let literal: LiteralType?
@@ -99,11 +96,9 @@ class Token {
         self.literal = literal
         self.line = line
     }
-    
 }
 
 extension Token: CustomStringConvertible {
-    
     var description: String {
         if let literal = self.literal {
             return "Token(type: \(self.type), lexeme: '\(self.lexeme)', literal: \(literal), line: \(self.line))"
@@ -111,5 +106,4 @@ extension Token: CustomStringConvertible {
             return "Token(type: \(self.type), lexeme: '\(self.lexeme)', line: \(self.line))"
         }
     }
-    
 }

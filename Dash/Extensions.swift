@@ -9,7 +9,6 @@
 import Foundation
 
 extension String {
-    
     subscript (i: Int) -> String {
         self[i ..< i + 1]
     }
@@ -28,5 +27,4 @@ extension String {
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
         return String(self[start ..< end])
     }
-    
 }

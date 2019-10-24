@@ -9,7 +9,6 @@
 import Foundation
 
 class Dash {
-    
     static var errorFound: Bool = false
     
     static func startInterpreter(withArgs args: [String]) throws {
@@ -45,7 +44,7 @@ class Dash {
         while true {
             print("\n> ", terminator: "")
             if let readLine = readLine() {
-                guard readLine != "$exit" else {
+                guard readLine != ":exit" else {
                     print("\nExiting...")
                     break
                 }
@@ -64,7 +63,11 @@ class Dash {
         let tokens = Scanner(fromSource: source).scanTokens()
         let parser = Parser(withTokens: tokens)
         if let expr = parser.parse() {
-            print(AstPrinter().print(expr: expr))
+            do {
+                try print(AstPrinter().print(expr: expr))
+            } catch {
+                print("An error occurred: \(error.localizedDescription)")
+            }
         }
         
         if self.errorFound { return }
@@ -75,5 +78,4 @@ class Dash {
         
         self.errorFound = true
     }
-    
 }

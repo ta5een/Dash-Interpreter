@@ -9,7 +9,6 @@
 import Foundation
 
 class Scanner {
-        
     private let source: String
     private var tokens: [Token] = []
     
@@ -76,12 +75,10 @@ class Scanner {
                                  literal: literal,
                                  line: self.line))
     }
-    
 }
 
 // MARK: - Matching
 extension Scanner {
-    
     func nextTokenMatches(_ expected: String) -> Bool {
         if self.isAtEnd { return false }
         if self.source[self.current] != expected { return false }
@@ -106,12 +103,10 @@ extension Scanner {
         if ((self.current + 1) >= self.source.count) { return "\0" }
         return self.source[self.current + 1]
     }
-    
 }
 
 // MARK: - Literals
 extension Scanner {
-    
     func newLine() {
         self.addToken(type: .newline, lexeme: "\\n", literal: "\\n")
         self.line += 1
@@ -169,5 +164,4 @@ extension Scanner {
             self.addToken(type: .literal(.identifier))
         }
     }
-    
 }

@@ -17,11 +17,6 @@ private func constructMessage(error message: String, help: String? = nil) -> Str
     }
 }
 
-enum SysArgsError: Error {
-    case invalidNumberOfArgs(Int, Int, String? = nil)
-    case unknownArg(String)
-}
-
 extension SysArgsError: LocalizedError {
     var errorDescription: String? {
         switch self {
@@ -35,10 +30,6 @@ extension SysArgsError: LocalizedError {
     }
 }
 
-enum ParseError: Error {
-    case parseError(token: Token, message: String)
-}
-
 extension ParseError: LocalizedError {
     var errorDescription: String? {
         switch self {
@@ -48,6 +39,15 @@ extension ParseError: LocalizedError {
             } else {
                 return constructMessage(error: "line \(token.line) on `\(token.lexeme)`: \(errorMessage)")
             }
+        }
+    }
+}
+
+extension RuntimeError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .invalidOperand(expected: let expected):
+            return constructMessage(error: "Operand must be a \(expected)")
         }
     }
 }

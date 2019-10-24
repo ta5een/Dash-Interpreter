@@ -8,13 +8,17 @@
 
 import Foundation
 
+enum SysArgsError: Error {
+    case invalidNumberOfArgs(Int, Int, String? = nil)
+    case unknownArg(String)
+}
+
 enum InputSource {
     case stdin
     case file(String)
 }
 
 class SysArgs {
-    
     var inputSource: InputSource = .stdin
     
     init?(parse args: [String]) throws {
@@ -42,5 +46,4 @@ class SysArgs {
             }
         }
     }
-    
 }

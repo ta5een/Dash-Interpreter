@@ -8,8 +8,11 @@
 
 import Foundation
 
+enum ParseError: Error {
+    case parseError(token: Token, message: String)
+}
+
 class Parser {
-    
     private let tokens: [Token]
     private var current: Int = 0
     
@@ -78,11 +81,9 @@ class Parser {
     private func previous() -> Token {
         return self.tokens[self.current - 1]
     }
-    
 }
 
 private extension Parser {
-    
     func expression() throws -> Expr {
         return try self.equality()
     }
@@ -162,11 +163,9 @@ private extension Parser {
         
         throw ParseError.parseError(token: self.peek(), message: "Expected expression")
     }
-    
 }
 
 private extension Parser {
-    
     func synchronise() {
         self.advance()
         
@@ -184,5 +183,4 @@ private extension Parser {
             }
         }
     }
-    
 }
