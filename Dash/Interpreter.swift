@@ -13,8 +13,25 @@ enum RuntimeError: Error {
 }
 
 class Interpreter {
-    private func evaluate(expr: Expr) throws -> Any {
-        return try expr.accept(visitor: self) as Any
+    public func interpret(expression: Expr) {
+        do {
+            let value = try self.evaluate(expr: expression)
+            print("= " + self.stringify(object: value))
+        } catch {
+            Dash.reportRuntimeError(error: error as! RuntimeError)
+        }
+    }
+    
+    private func stringify(object: Any?) -> String {
+        if let object = object {
+            return String(describing: object)
+        } else {
+            return "nothing"
+        }
+    }
+    
+    private func evaluate(expr: Expr) throws -> Any? {
+        return try expr.accept(visitor: self)
     }
     
     private func checkNumberOperand(operator: Token, operand: Any?) throws {
@@ -29,7 +46,7 @@ class Interpreter {
     
     private func isTruthy(_ object: Any?) -> Bool {
         if object == nil { return false }
-        if object is Bool { return false }
+        if object is Bool { return (object as! Bool) }
         
         return true
     }
@@ -45,6 +62,10 @@ class Interpreter {
     private func isEqual(_ left: Any?, _ right: Any?) -> Bool {
         if (left == nil) && (right == nil) { return true }
         if (left == nil) || (right == nil) { return false }
+        
+        if (left is Double) && (right is Double) { return (left as! Double) == (right as! Double) }
+        if (left is String) && (right is String) { return (left as! String) == (right as! String) }
+        if (left is Bool) && (right is Bool) { return (left as! Bool) == (right as! Bool) }
         
         return self.equate(left, right)
     }
@@ -99,8 +120,6 @@ extension Interpreter : Visitor {
         default:
             fatalError("Unreachable")
         }
-        
-        return nil
     }
 
     func visitGroupingExpr(expr: GroupingExpr) throws -> R {

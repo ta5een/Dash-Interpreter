@@ -9,7 +9,9 @@
 import Foundation
 
 class Dash {
+    static let interpreter: Interpreter = Interpreter()
     static var errorFound: Bool = false
+    static var hadRuntimeError: Bool = false
     
     static func startInterpreter(withArgs args: [String]) throws {
         if args.isEmpty {
@@ -36,6 +38,9 @@ class Dash {
         } catch {
             print(error.localizedDescription)
         }
+        
+        if self.errorFound { exit(EXIT_FAILURE) }
+        if self.hadRuntimeError { exit(EXIT_FAILURE) }
     }
     
     static func runPrompt() {
@@ -62,20 +67,34 @@ class Dash {
     private static func run(fromSource source: String) {
         let tokens = Scanner(fromSource: source).scanTokens()
         let parser = Parser(withTokens: tokens)
+        
+        if self.errorFound { return }
+        
         if let expr = parser.parse() {
             do {
+                print(": ", terminator: "")
                 try print(AstPrinter().print(expr: expr))
+                self.interpreter.interpret(expression: expr)
             } catch {
                 print("An error occurred: \(error.localizedDescription)")
             }
+        } else {
+            Dash.reportError(location: (0, 0), message: "Failed to parse expression")
         }
-        
-        if self.errorFound { return }
     }
     
     static func reportError(location: (Int, Int), message: String) {
         print("\u{001B}[1;31m[\(location.0):\(location.1)] Error: \(message)\u{001B}[0;0m")
         
         self.errorFound = true
+    }
+    
+    static func reportRuntimeError(error: RuntimeError) {
+        switch error {
+        case .invalidOperand(token: let token, message: let message):
+            print("\u{001B}[1;31m[\(token.line)] Error: \(message)\u{001B}[0;0m")
+        }
+        
+        self.hadRuntimeError = true
     }
 }
