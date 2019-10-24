@@ -18,11 +18,9 @@ class Parser {
     }
     
     func parse() -> Expr? {
-        switch self.expression() {
-        case .success(let expr):
-            return expr
-        case .failure(let error):
-            print(error.localizedDescription)
+        do {
+            return try self.expression()
+        } catch {
             return nil
         }
     }
@@ -39,15 +37,15 @@ class Parser {
     }
     
     @discardableResult
-    private func consume(type: TokenType, message: String) -> Result<Token, ParseError> {
+    private func consume(type: TokenType, message: String) throws -> Token {
         if self.check(type) {
-            return .success(self.advance())
+            return self.advance()
         }
         
-        return .failure(reportError(token: self.peek(), message: message))
+        throw reportError(token: self.peek(), message: message)
     }
     
-    private func reportError(token: Token, message: String) -> ParseError {
+    private func reportError(token: Token, message: String) -> Error {
         Dash.reportError(location: (token.line, 0), message: message)
         return ParseError.parseError(token: token, message: message)
     }
@@ -85,128 +83,84 @@ class Parser {
 
 private extension Parser {
     
-    func expression() -> Result<Expr, ParseError> {
-        return self.equality()
+    func expression() throws -> Expr {
+        return try self.equality()
     }
     
-    func equality() -> Result<Expr, ParseError> {
-        var expr = self.comparison()
+    func equality() throws -> Expr {
+        var expr = try self.comparison()
         
         while self.match(.char(.bangEqual), .char(.equalEqual)) {
-            switch (expr, self.comparison()) {
-            case (.success(let left), .success(let right)):
-                let op = self.previous()
-                expr = .success(BinaryExpr(left: left, operator: op, right: right))
-            case (.failure(let error), _), (_, .failure(let error)):
-                return .failure(error)
-            default:
-                fatalError("UNEXPECTED")
-            }
+            let op = self.previous()
+            let right = try self.comparison()
+            expr = BinaryExpr(left: expr, operator: op, right: right)
         }
         
         return expr
     }
     
-    func comparison() -> Result<Expr, ParseError> {
-        var expr = self.addition()
+    func comparison() throws -> Expr {
+        var expr = try self.addition()
         
         while self.match(.char(.less), .char(.lessEqual), .char(.greater), .char(.greaterEqual)) {
-            switch (expr, self.addition()) {
-            case (.success(let left), .success(let right)):
-                let op = self.previous()
-                expr = .success(BinaryExpr(left: left, operator: op, right: right))
-            case (.failure(let error), _), (_, .failure(let error)):
-                return .failure(error)
-            default:
-                fatalError("UNEXPECTED")
-            }
+            let op = self.previous()
+            let right = try self.addition()
+            expr = BinaryExpr(left: expr, operator: op, right: right)
         }
         
         return expr
     }
     
-    func addition() -> Result<Expr, ParseError> {
-        var expr = self.multiplication()
+    func addition() throws -> Expr {
+        var expr = try self.multiplication()
         
         while self.match(.char(.plus), .char(.minus)) {
-            switch (expr, self.multiplication()) {
-            case (.success(let left), .success(let right)):
-                let op = self.previous()
-                expr = .success(BinaryExpr(left: left, operator: op, right: right))
-            case (.failure(let error), _), (_, .failure(let error)):
-                return .failure(error)
-            default:
-                fatalError("UNEXPECTED")
-            }
+            let op = self.previous()
+            let right = try self.multiplication()
+            expr = BinaryExpr(left: expr, operator: op, right: right)
         }
         
         return expr
     }
     
-    func multiplication() -> Result<Expr, ParseError> {
-        var expr = self.unary()
+    func multiplication() throws -> Expr {
+        var expr = try self.unary()
         
         while self.match(.char(.asterisk), .char(.slash)) {
-            switch (expr, self.unary()) {
-            case (.success(let left), .success(let right)):
-                let op = self.previous()
-                expr = .success(BinaryExpr(left: left, operator: op, right: right))
-            case (.failure(let error), _), (_, .failure(let error)):
-                return .failure(error)
-            default:
-                fatalError("UNEXPECTED")
-            }
+            let op = self.previous()
+            let right = try self.unary()
+            expr = BinaryExpr(left: expr, operator: op, right: right)
         }
         
         return expr
     }
     
-    func unary() -> Result<Expr, ParseError> {
+    func unary() throws -> Expr {
         if self.match(.char(.bang), .char(.minus)) {
-            switch self.unary() {
-            case .success(let right):
-                let op = self.previous()
-                return .success(UnaryExpr(withOperator: op, rightExpr: right))
-            case .failure(let error):
-                return .failure(error)
-            }
+            let op = self.previous()
+            let right = try self.unary()
+            return UnaryExpr(withOperator: op, rightExpr: right)
         }
         
-        return self.primary()
+        return try self.primary()
     }
     
-    func primary() -> Result<Expr, ParseError> {
-        if self.match(.keyword(.false)) {
-            return .success(LiteralExpr(withValue: false))
-        }
-        
-        if self.match(.keyword(.true)) {
-            return .success(LiteralExpr(withValue: true))
-        }
-        
-        if self.match(.keyword(.nothing)) {
-            return .success(LiteralExpr(withValue: nil))
-        }
+    func primary() throws -> Expr {
+        if self.match(.keyword(.false)) { return LiteralExpr(withValue: false) }
+        if self.match(.keyword(.true)) { return LiteralExpr(withValue: true) }
+        if self.match(.keyword(.nothing)) { return LiteralExpr(withValue: nil) }
         
         if self.match(.literal(.number), .literal(.string)) {
-            return .success(LiteralExpr(withValue: self.previous().literal))
+            return LiteralExpr(withValue: self.previous().literal)
         }
         
         if self.match(.char(.leftParen)) {
-            switch self.consume(type: .char(.rightParen), message: "Expected `)` after expression") {
-            case .success(_):
-                switch self.expression() {
-                case .success(let expr):
-                    return .success(GroupingExpr(withExpression: expr))
-                case .failure(let error):
-                    return .failure(error)
-                }
-            case .failure(let error):
-                return .failure(error)
-            }
+            let expr = try self.expression()
+            try self.consume(type: .char(.rightParen), message: "Expected `)` after expression.")
+            return GroupingExpr(withExpression: expr)
         }
         
-        return .failure(ParseError.parseError(token: self.peek(), message: "Expected expression"))
+        throw ParseError.parseError(token: self.peek(), message: "Expected expression")
     }
     
 }
