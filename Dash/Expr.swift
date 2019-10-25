@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Visitor {
+protocol ExprVisitor {
     associatedtype R
     
     func visitBinaryExpr(expr: BinaryExpr) throws -> R
@@ -18,5 +18,5 @@ protocol Visitor {
 }
 
 protocol Expr {
-    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R
+    func accept<V: ExprVisitor, R>(visitor: V) throws -> R where V.R == R
 }

@@ -22,7 +22,7 @@ class AstPrinter {
     }
 }
 
-extension AstPrinter: Visitor {
+extension AstPrinter: ExprVisitor {
     typealias R = String
 
     func visitBinaryExpr(expr: BinaryExpr) throws -> R {

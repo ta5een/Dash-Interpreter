@@ -17,7 +17,7 @@ class LiteralExpr: Expr {
         self.value = value
     }
     
-    func accept<V: Visitor, R>(visitor: V) throws -> R where V.R == R {
+    func accept<V: ExprVisitor, R>(visitor: V) throws -> R where V.R == R {
         return try visitor.visitLiteralExpr(expr: self)
     }
 }

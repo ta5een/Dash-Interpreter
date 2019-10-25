@@ -71,7 +71,7 @@ class Interpreter {
     }
 }
 
-extension Interpreter : Visitor {
+extension Interpreter : ExprVisitor {
     typealias R = Any?
 
     func visitBinaryExpr(expr: BinaryExpr) throws -> R {
