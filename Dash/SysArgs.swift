@@ -15,7 +15,7 @@ enum SysArgsError: Error {
 
 enum InputSource {
     case stdin
-    case file(String)
+    case file(path: String)
 }
 
 class SysArgs {
@@ -35,14 +35,14 @@ class SysArgs {
                 switch arg {
                 case "-f", "--file":
                     let helpMessage = "Parameter 'file' (with `-f` or `--file`) requires a path to the Dash script"
-                    self.inputSource = .file(try getArgumentsForParamater(atIndex: i, help: helpMessage))
+                    self.inputSource = .file(path: try getArgumentsForParamater(atIndex: i, help: helpMessage))
                 case "-r", "--read":
                     self.inputSource = .stdin
                 default:
                     throw SysArgsError.unknownArg(arg)
                 }
             } else {
-                self.inputSource = .file(arg)
+                self.inputSource = .file(path: arg)
             }
         }
     }

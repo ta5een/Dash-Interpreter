@@ -14,7 +14,7 @@ struct ErrorLocation: CustomStringConvertible {
     
     var description: String {
         if let column = self.column {
-            return "line \(self.line), column: \(column) (\(self.line):\(column))"
+            return "line \(self.line), column \(column) (\(self.line):\(column))"
         } else {
             return "line \(self.line)"
         }
@@ -36,11 +36,9 @@ class Dash {
             if let inputSource = sysArgs?.inputSource {
                 switch inputSource {
                 case .stdin:
-                    print("\u{001B}[1;36mInput source: REPL\u{001B}[0;0m")
                     self.inRepl = true
                     self.runPrompt()
                 case .file(let path):
-                    print("\u{001B}[1;36mInput source: \(inputSource)\u{001B}[0;0m")
                     self.inRepl = false
                     self.runFile(fromPath: path)
                 }
@@ -49,6 +47,8 @@ class Dash {
     }
     
     static func runFile(fromPath path: String) {
+        print("\u{001B}[1;36mInput source: \(InputSource.file(path: path))\u{001B}[0;0m")
+        
         let url = URL(fileURLWithPath: path)
         do {
             self.run(fromSource: try String(contentsOf: url, encoding: .utf8))
@@ -61,10 +61,11 @@ class Dash {
     }
     
     static func runPrompt() {
+        print("\u{001B}[1;36mInput source: \(InputSource.stdin)\u{001B}[0;0m")
         print("Dash REPL v0.1")
         
         while true {
-            print("\n> ", terminator: "")
+            print("> ", terminator: "")
             if let readLine = readLine() {
                 guard readLine != ":exit" else {
                     print("\nExiting...")
@@ -117,25 +118,27 @@ class Dash {
         let r = "\(escapeSeq)[1;31m"    // red
         let b = "\(escapeSeq)[1;34m"    // blue
         let x = "\(escapeSeq)[0;0m"     // reset/none
-        let end = !self.inRepl ? "\n" : ""
         
         if let location = location {
             if let help = help {
                 return """
                 \(r)  error:\(x) \(message)
                 \(b)  where:\(x) \(location.description)
-                \(b)   help:\(x) \(help)\(end)
+                \(b)   help:\(x) \(help)
+                
                 """
             } else {
                 return """
                 \(r)  error:\(x) \(message)
-                \(b)  where:\(x) \(location.description)\(end)
+                \(b)  where:\(x) \(location.description)
+                
                 """
             }
         }
         
         return """
-        \(r)  error:\(x) \(message)\(end)
+        \(r)  error:\(x) \(message)
+        
         """
     }
 }
