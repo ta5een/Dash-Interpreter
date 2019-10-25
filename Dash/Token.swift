@@ -19,7 +19,7 @@ enum Char {
 }
 
 enum Keyword {
-    case and, `class`, dbg, `else`, `false`, fun, `for`, `if`, nothing, or, `return`, `self`, `super`, then,
+    case and, `class`, `else`, `false`, fun, `for`, `if`, nothing, or, print, `return`, `self`, `super`, then,
         `true`, `var`, `while`
 }
 
@@ -46,7 +46,6 @@ enum TokenType {
         switch string {
         case "and":     return .keyword(.and)
         case "class":   return .keyword(.class)
-        case "dbg":     return .keyword(.dbg)
         case "else":    return .keyword(.else)
         case "false":   return .keyword(.false)
         case "for":     return .keyword(.for)
@@ -54,6 +53,7 @@ enum TokenType {
         case "if":      return .keyword(.if)
         case "nothing": return .keyword(.nothing)
         case "or":      return .keyword(.or)
+        case "print":   return .keyword(.print)
         case "return":  return .keyword(.return)
         case "self":    return .keyword(.`self`)
         case "super":   return .keyword(.super)
