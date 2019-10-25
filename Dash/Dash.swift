@@ -8,6 +8,19 @@
 
 import Foundation
 
+struct ErrorLocation: CustomStringConvertible {
+    let line: Int
+    let char: Int?
+    
+    var description: String {
+        if let char = self.char {
+            return "line \(self.line), character: \(char) (\(self.line):\(char))"
+        } else {
+            return "line \(self.line)"
+        }
+    }
+}
+
 class Dash {
     static let interpreter: Interpreter = Interpreter()
     static var errorFound: Bool = false
@@ -22,6 +35,7 @@ class Dash {
             if let inputSource = sysArgs?.inputSource {
                 switch inputSource {
                 case .stdin:
+                    print("\u{001B}[1;36mInput source: REPL\u{001B}[0;0m")
                     self.runPrompt()
                 case .file(let path):
                     print("\u{001B}[1;36mInput source: \(inputSource)\u{001B}[0;0m")
@@ -68,33 +82,56 @@ class Dash {
         let tokens = Scanner(fromSource: source).scanTokens()
         let parser = Parser(withTokens: tokens)
         
-        if self.errorFound { return }
-        
-        if let expr = parser.parse() {
-            do {
-                print(": ", terminator: "")
-                try print(AstPrinter().print(expr: expr))
-                self.interpreter.interpret(expression: expr)
-            } catch {
-                print("An error occurred: \(error.localizedDescription)")
-            }
-        } else {
-            Dash.reportError(location: (0, 0), message: "Failed to parse expression")
+        do {
+            let statements = try parser.parse()
+            self.interpreter.interpret(statements: statements)
+        } catch {
+            Dash.reportError(location: nil, message: "Failed to parse input.")
+            self.errorFound = true
         }
+        
+        if self.errorFound { return }
     }
     
-    static func reportError(location: (Int, Int), message: String) {
-        print("\u{001B}[1;31m[\(location.0):\(location.1)] Error: \(message)\u{001B}[0;0m")
-        
+    static func reportError(location: ErrorLocation?, message: String, help: String? = nil) {
+        print(self.constructErrorMessage(location: location, message: message, help: help))
         self.errorFound = true
     }
     
     static func reportRuntimeError(error: RuntimeError) {
         switch error {
-        case .invalidOperand(token: let token, message: let message):
-            print("\u{001B}[1;31m[\(token.line)] Error: \(message)\u{001B}[0;0m")
+        case .invalidOperand(token: let token, message: let message, help: let help):
+            print(self.constructErrorMessage(location: ErrorLocation(line: token.line, char: nil),
+                                        message: message,
+                                        help: help))
         }
         
         self.hadRuntimeError = true
+    }
+    
+    static func constructErrorMessage(location: ErrorLocation?, message: String, help: String? = nil) -> String {
+        let escapeSeq = "\u{001B}"
+        let r = "\(escapeSeq)[1;31m"    // red
+        let b = "\(escapeSeq)[1;34m"    // blue
+        let x = "\(escapeSeq)[0;0m"     // reset/none
+        
+        if let location = location {
+            if let help = help {
+                return """
+                \(r)  error:\(x) \(message)
+                \(b)     at:\(x) \(location.description)
+                \(b)   help:\(x) \(help)
+                """
+            } else {
+                return """
+                \(r)  error:\(x) \(message)
+                \(b)     at:\(x) \(location.description)
+                """
+            }
+        }
+        
+        return """
+        \(r)  error:\(x) \(message)
+        """
     }
 }
