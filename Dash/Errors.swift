@@ -8,24 +8,17 @@
 
 import Foundation
 
-private func constructMessage(error message: String, help: String? = nil) -> String {
-    let msg = "\u{001B}[1;31m  [error]:\u{001B}[0;0m \(message)"
-    if let help = help {
-        return msg + "\n\u{001B}[1;34m   [help]:\u{001B}[0;0m \(help)"
-    } else {
-        return msg
-    }
-}
-
 extension SysArgsError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidNumberOfArgs(let expected, let given, let helpMessage):
             let errorMessage = "Invalid number of arguments: expected \(expected), found \(given)"
-            return constructMessage(error: errorMessage, help: helpMessage)
+            return Dash.constructErrorMessage(location: nil,
+                                              message: errorMessage,
+                                              help: helpMessage)
         case .unknownArg(let arg):
             let errorMessage = "Unknown argument `\(arg)`"
-            return constructMessage(error: errorMessage)
+            return Dash.constructErrorMessage(location: nil, message: errorMessage)
         }
     }
 }
@@ -35,9 +28,13 @@ extension ParseError: LocalizedError {
         switch self {
         case .parseError(token: let token, message: let errorMessage):
             if token.type == .eof {
-                return constructMessage(error: "line \(token.line) at end: \(errorMessage)")
+                return Dash.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
+                                                  message: errorMessage,
+                                                  help: nil)
             } else {
-                return constructMessage(error: "line \(token.line) on `\(token.lexeme)`: \(errorMessage)")
+                return Dash.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
+                                                  message: errorMessage,
+                                                  help: "Unknown token `\(token.lexeme)`.")
             }
         }
     }
@@ -46,8 +43,10 @@ extension ParseError: LocalizedError {
 extension RuntimeError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .invalidOperand(token: let token, message: let message):
-            return constructMessage(error: "Unexpected operand `\(token.literal ?? "nothing")`. \(message).")
+        case .invalidOperand(token: let token, message: let message, help: let help):
+            return Dash.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
+                                              message: message,
+                                              help: help)
         }
     }
 }

@@ -14,6 +14,7 @@ class Scanner {
     
     private var start: Int = 0
     private var current: Int = 0
+    private var column: Int = 1
     private var line: Int = 1
     
     private var isAtEnd: Bool {
@@ -66,9 +67,9 @@ class Scanner {
         case let a where (a.rangeOfCharacter(from: .alphanumerics) != nil) || a == "_": self.identifier(fromIndex: self.current - 1)
         
         case let char:
-            Dash.reportError(location: ErrorLocation(line: self.line, char: self.current - 1),
-                             message: "Unexpected character `\(char)`",
-                             help: "The symbol `\(char)` was unexpectedly found. Was this meant to be here?")
+            Dash.reportError(location: ErrorLocation(line: self.line, column: self.column),
+                             message: "Unexpected character `\(char)`.",
+                             help: "The symbol `\(char)` isn't recognised. Was this meant to be here?")
         }
     }
     
@@ -87,6 +88,7 @@ extension Scanner {
         if self.source[self.current] != expected { return false }
         
         self.current += 1
+        self.column += 1
         return true
     }
     
@@ -94,6 +96,7 @@ extension Scanner {
     @discardableResult
     func advance() -> String {
         self.current += 1
+        self.column += 1
         return self.source[self.current - 1]
     }
     
@@ -113,21 +116,23 @@ extension Scanner {
     func newLine() {
         // self.addToken(type: .newline, lexeme: "\\n", literal: "\\n")
         self.line += 1
+        self.column = 1
     }
     
     func string(fromIndex index: Int, symbol: String) {
         while self.peek() != symbol && !self.isAtEnd {
             if (self.peek() == "\n") {
                 self.line += 1
+                self.column = 1
             }
             
             self.advance()
         }
         
         if self.isAtEnd {
-            Dash.reportError(location: ErrorLocation(line: self.line, char: self.current - 1),
-                             message: "Untermininated string",
-                             help: "There seems to be a missing `\(symbol)` somewhere.")
+            Dash.reportError(location: ErrorLocation(line: self.line, column: self.column),
+                             message: "Unterminated string.",
+                             help: "There seems to be a missing `\(symbol)` on this line. Add the missing quotation mark to correctly close it.")
             return
         }
         

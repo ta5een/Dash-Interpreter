@@ -93,7 +93,7 @@ extension Interpreter: ExprVisitor {
             }
             
             throw RuntimeError.invalidOperand(token: expr.operator,
-                                              message: "Operands must be two numbers or two strings")
+                                              message: "Operands must be two numbers or two strings.")
         case .char(.minus):
             try self.checkNumberOperands(operator: expr.operator, left: left, right: right)
             return (left as! Double) - (right as! Double)

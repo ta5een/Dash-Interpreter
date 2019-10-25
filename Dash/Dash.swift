@@ -10,11 +10,11 @@ import Foundation
 
 struct ErrorLocation: CustomStringConvertible {
     let line: Int
-    let char: Int?
+    let column: Int?
     
     var description: String {
-        if let char = self.char {
-            return "line \(self.line), character: \(char) (\(self.line):\(char))"
+        if let column = self.column {
+            return "line \(self.line), column: \(column) (\(self.line):\(column))"
         } else {
             return "line \(self.line)"
         }
@@ -25,6 +25,7 @@ class Dash {
     static let interpreter: Interpreter = Interpreter()
     static var errorFound: Bool = false
     static var hadRuntimeError: Bool = false
+    static var inRepl: Bool = true
     
     static func startInterpreter(withArgs args: [String]) throws {
         if args.isEmpty {
@@ -36,9 +37,11 @@ class Dash {
                 switch inputSource {
                 case .stdin:
                     print("\u{001B}[1;36mInput source: REPL\u{001B}[0;0m")
+                    self.inRepl = true
                     self.runPrompt()
                 case .file(let path):
                     print("\u{001B}[1;36mInput source: \(inputSource)\u{001B}[0;0m")
+                    self.inRepl = false
                     self.runFile(fromPath: path)
                 }
             }
@@ -86,7 +89,7 @@ class Dash {
             let statements = try parser.parse()
             self.interpreter.interpret(statements: statements)
         } catch {
-            Dash.reportError(location: nil, message: "Failed to parse input.")
+            print(error.localizedDescription)
             self.errorFound = true
         }
         
@@ -101,7 +104,7 @@ class Dash {
     static func reportRuntimeError(error: RuntimeError) {
         switch error {
         case .invalidOperand(token: let token, message: let message, help: let help):
-            print(self.constructErrorMessage(location: ErrorLocation(line: token.line, char: nil),
+            print(self.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
                                         message: message,
                                         help: help))
         }
@@ -114,24 +117,25 @@ class Dash {
         let r = "\(escapeSeq)[1;31m"    // red
         let b = "\(escapeSeq)[1;34m"    // blue
         let x = "\(escapeSeq)[0;0m"     // reset/none
+        let end = !self.inRepl ? "\n" : ""
         
         if let location = location {
             if let help = help {
                 return """
                 \(r)  error:\(x) \(message)
-                \(b)     at:\(x) \(location.description)
-                \(b)   help:\(x) \(help)
+                \(b)  where:\(x) \(location.description)
+                \(b)   help:\(x) \(help)\(end)
                 """
             } else {
                 return """
                 \(r)  error:\(x) \(message)
-                \(b)     at:\(x) \(location.description)
+                \(b)  where:\(x) \(location.description)\(end)
                 """
             }
         }
         
         return """
-        \(r)  error:\(x) \(message)
+        \(r)  error:\(x) \(message)\(end)
         """
     }
 }
