@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+class ClassStmt: Stmt {
+    func accept<V, R>(visitor: V) throws -> R where V : ExprVisitor, R == V.R {
+        fatalError("Unimplemented")
+    }
+}

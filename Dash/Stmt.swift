@@ -11,15 +11,15 @@ import Foundation
 protocol StmtVisitor {
     associatedtype R
     
-    func visitBlockStmt() throws -> R
-    func visitClassStmt() throws -> R
-    func visitExpressionStmt() throws -> R
-    func visitFunctionStmt() throws -> R
-    func visitIfStmt() throws -> R
-    func visitPrintStmt() throws -> R
-    func visitReturnStmt() throws -> R
-    func visitVarStmt() throws -> R
-    func visitWhileStmt() throws -> R
+    func visitBlockStmt(stmt: BlockStmt) throws -> R
+    func visitClassStmt(stmt: ClassStmt) throws -> R
+    func visitExpressionStmt(stmt: ExpressionStmt) throws -> R
+    func visitFunctionStmt(stmt: FunctionStmt) throws -> R
+    func visitIfStmt(stmt: IfStmt) throws -> R
+    func visitPrintStmt(stmt: PrintStmt) throws -> R
+    func visitReturnStmt(stmt: ReturnStmt) throws -> R
+    func visitVarStmt(stmt: VarStmt) throws -> R
+    func visitWhileStmt(stmt: WhileStmt) throws -> R
 }
 
 protocol Stmt {
