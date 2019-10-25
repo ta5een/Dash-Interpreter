@@ -9,7 +9,7 @@
 import Foundation
 
 class FunctionStmt: Stmt {
-    func accept<V, R>(visitor: V) throws -> R where V : ExprVisitor, R == V.R {
+    func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
         fatalError("Unimplemented")
     }
 }

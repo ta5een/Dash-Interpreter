@@ -9,19 +9,19 @@
 import Foundation
 
 protocol StmtVisitor {
-    associatedtype R
+    associatedtype StmtResult
     
-    func visitBlockStmt(stmt: BlockStmt) throws -> R
-    func visitClassStmt(stmt: ClassStmt) throws -> R
-    func visitExpressionStmt(stmt: ExpressionStmt) throws -> R
-    func visitFunctionStmt(stmt: FunctionStmt) throws -> R
-    func visitIfStmt(stmt: IfStmt) throws -> R
-    func visitPrintStmt(stmt: PrintStmt) throws -> R
-    func visitReturnStmt(stmt: ReturnStmt) throws -> R
-    func visitVarStmt(stmt: VarStmt) throws -> R
-    func visitWhileStmt(stmt: WhileStmt) throws -> R
+    func visitBlockStmt(stmt: BlockStmt) throws -> StmtResult
+    func visitClassStmt(stmt: ClassStmt) throws -> StmtResult
+    func visitExpressionStmt(stmt: ExpressionStmt) throws -> StmtResult
+    func visitFunctionStmt(stmt: FunctionStmt) throws -> StmtResult
+    func visitIfStmt(stmt: IfStmt) throws -> StmtResult
+    func visitPrintStmt(stmt: PrintStmt) throws -> StmtResult
+    func visitReturnStmt(stmt: ReturnStmt) throws -> StmtResult
+    func visitVarStmt(stmt: VarStmt) throws -> StmtResult
+    func visitWhileStmt(stmt: WhileStmt) throws -> StmtResult
 }
 
 protocol Stmt {
-    func accept<V: ExprVisitor, R>(visitor: V) throws -> R where V.R == R
+    func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult
 }

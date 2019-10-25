@@ -15,7 +15,7 @@ class GroupingExpr: Expr {
         self.expression = expression
     }
     
-    func accept<V: ExprVisitor, R>(visitor: V) throws -> R where V.R == R {
+    func accept<V: ExprVisitor>(visitor: V) throws -> V.ExprResult {
         return try visitor.visitGroupingExpr(expr: self)
     }
 }

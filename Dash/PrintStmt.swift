@@ -9,7 +9,13 @@
 import Foundation
 
 class PrintStmt: Stmt {
-    func accept<V, R>(visitor: V) throws -> R where V : ExprVisitor, R == V.R {
-        fatalError("Unimplemented")
+    var expression: Expr
+    
+    init(withExpr expr: Expr) {
+        self.expression = expr
+    }
+
+    func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
+        return try visitor.visitPrintStmt(stmt: self)
     }
 }

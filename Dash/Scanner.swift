@@ -60,12 +60,15 @@ class Scanner {
         case "\n":  self.newLine()
         case "", " ", "\r", "\t": break
             
-        case "\"":  self.string(fromIndex: self.current - 1)
+        case "\"":  self.string(fromIndex: self.current - 1, symbol: "\"")
+        case "'":   self.string(fromIndex: self.current - 1, symbol: "'")
         case let n where n.rangeOfCharacter(from: .decimalDigits) != nil: self.number(fromIndex: self.current - 1)
         case let a where (a.rangeOfCharacter(from: .alphanumerics) != nil) || a == "_": self.identifier(fromIndex: self.current - 1)
         
         case let char:
-            Dash.reportError(location: (self.line, self.current - 1), message: "Unexpected character: '\(char)'")
+            Dash.reportError(location: ErrorLocation(line: self.line, char: self.current - 1),
+                             message: "Unexpected character `\(char)`",
+                             help: "The symbol `\(char)` was unexpectedly found. Was this meant to be here?")
         }
     }
     
@@ -108,12 +111,12 @@ extension Scanner {
 // MARK: - Literals
 extension Scanner {
     func newLine() {
-        self.addToken(type: .newline, lexeme: "\\n", literal: "\\n")
+        // self.addToken(type: .newline, lexeme: "\\n", literal: "\\n")
         self.line += 1
     }
     
-    func string(fromIndex index: Int) {
-        while self.peek() != "\"" && !self.isAtEnd {
+    func string(fromIndex index: Int, symbol: String) {
+        while self.peek() != symbol && !self.isAtEnd {
             if (self.peek() == "\n") {
                 self.line += 1
             }
@@ -122,7 +125,9 @@ extension Scanner {
         }
         
         if self.isAtEnd {
-            Dash.reportError(location: (self.line, self.current - 1), message: "Unterminated string")
+            Dash.reportError(location: ErrorLocation(line: self.line, char: self.current - 1),
+                             message: "Untermininated string",
+                             help: "There seems to be a missing `\(symbol)` somewhere.")
             return
         }
         

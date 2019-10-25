@@ -19,7 +19,7 @@ class BinaryExpr: Expr {
         self.right = right
     }
     
-    func accept<V: ExprVisitor, R>(visitor: V) throws -> R where R == V.R {
+    func accept<V: ExprVisitor>(visitor: V) throws -> V.ExprResult {
         return try visitor.visitBinaryExpr(expr: self)
     }
 }

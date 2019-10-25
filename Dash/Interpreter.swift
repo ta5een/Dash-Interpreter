@@ -9,14 +9,13 @@
 import Foundation
 
 enum RuntimeError: Error {
-    case invalidOperand(token: Token, message: String)
+    case invalidOperand(token: Token, message: String, help: String? = nil)
 }
 
 class Interpreter {
-    public func interpret(expression: Expr) {
+    public func interpret(statements: [Stmt]) {
         do {
-            let value = try self.evaluate(expr: expression)
-            print("= " + self.stringify(object: value))
+            try statements.forEach { try self.execute(stmt: $0) }
         } catch {
             Dash.reportRuntimeError(error: error as! RuntimeError)
         }
@@ -30,6 +29,11 @@ class Interpreter {
         }
     }
     
+    private func execute(stmt: Stmt) throws {
+        try stmt.accept(visitor: self)
+    }
+    
+    @discardableResult
     private func evaluate(expr: Expr) throws -> Any? {
         return try expr.accept(visitor: self)
     }
@@ -71,10 +75,10 @@ class Interpreter {
     }
 }
 
-extension Interpreter : ExprVisitor {
-    typealias R = Any?
+extension Interpreter: ExprVisitor {
+    typealias ExprResult = Any?
 
-    func visitBinaryExpr(expr: BinaryExpr) throws -> R {
+    func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult {
         let left = try self.evaluate(expr: expr.left)
         let right = try self.evaluate(expr: expr.right)
         
@@ -122,15 +126,15 @@ extension Interpreter : ExprVisitor {
         }
     }
 
-    func visitGroupingExpr(expr: GroupingExpr) throws -> R {
+    func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult {
         return try self.evaluate(expr: expr.expression)
     }
 
-    func visitLiteralExpr(expr: LiteralExpr) throws -> R {
+    func visitLiteralExpr(expr: LiteralExpr) throws -> ExprResult {
         return expr.value
     }
 
-    func visitUnaryExpr(expr: UnaryExpr) throws -> R {
+    func visitUnaryExpr(expr: UnaryExpr) throws -> ExprResult {
         // TODO: `right` should be `Any?` to allow `nil` values
         let right = try self.evaluate(expr: expr.right)
         
@@ -143,5 +147,46 @@ extension Interpreter : ExprVisitor {
         default:
             fatalError("Unreachable")
         }
+    }
+}
+
+extension Interpreter: StmtVisitor {
+    typealias StmtResult = Void
+    
+    func visitBlockStmt(stmt: BlockStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitClassStmt(stmt: ClassStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitExpressionStmt(stmt: ExpressionStmt) throws -> StmtResult {
+        try self.evaluate(expr: stmt.expression)
+    }
+    
+    func visitFunctionStmt(stmt: FunctionStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitIfStmt(stmt: IfStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitPrintStmt(stmt: PrintStmt) throws -> StmtResult {
+        let value = try self.evaluate(expr: stmt.expression)
+        print(self.stringify(object: value))
+    }
+    
+    func visitReturnStmt(stmt: ReturnStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitVarStmt(stmt: VarStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
+    }
+    
+    func visitWhileStmt(stmt: WhileStmt) throws -> StmtResult {
+        fatalError("Unimplemented")
     }
 }
