@@ -20,12 +20,14 @@ class Parser {
         self.tokens = tokens
     }
     
-    func parse() -> Expr? {
-        do {
-            return try self.expression()
-        } catch {
-            return nil
+    func parse() throws -> [Stmt] {
+        var statements: [Stmt] = []
+        
+        while !self.isAtEnd() {
+            statements.append(try self.statement())
         }
+        
+        return statements
     }
     
     private func match(_ types: TokenType...) -> Bool {
@@ -41,15 +43,12 @@ class Parser {
     
     @discardableResult
     private func consume(type: TokenType, message: String) throws -> Token {
-        if self.check(type) {
-            return self.advance()
-        }
+        if self.check(type) { return self.advance() }
         
-        throw reportError(token: self.peek(), message: message)
+        throw self.reportError(token: self.peek(), message: message)
     }
     
     private func reportError(token: Token, message: String) -> Error {
-        Dash.reportError(location: (token.line, 0), message: message)
         return ParseError.parseError(token: token, message: message)
     }
     
@@ -80,6 +79,30 @@ class Parser {
     
     private func previous() -> Token {
         return self.tokens[self.current - 1]
+    }
+}
+
+private extension Parser {
+    func statement() throws -> Stmt {
+        if self.match(.keyword(.print)) {
+            return try self.printStatement()
+        }
+        
+        return try self.expressionStatement()
+    }
+    
+    func printStatement() throws -> Stmt {
+        let value = try self.expression()
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        
+        return PrintStmt(withExpr: value)
+    }
+    
+    func expressionStatement() throws -> Stmt {
+        let expr = try self.expression()
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        
+        return ExpressionStmt(withExpr: expr)
     }
 }
 
@@ -176,7 +199,7 @@ private extension Parser {
             
             switch self.peek().type {
             case .keyword(.class), .keyword(.fun), .keyword(.var), .keyword(.for), .keyword(.if), .keyword(.while),
-                 .keyword(.dbg), .keyword(.return):
+                 .keyword(.print), .keyword(.return):
                 return
             default:
                 self.advance()
