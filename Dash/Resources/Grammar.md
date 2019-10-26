@@ -1,13 +1,17 @@
 # Dash Grammar
 
 ```
-program   → statement* EOF ;
+program        → declaration* EOF ;
 
-statement → exprStmt
-          | printStmt ;
+declaration    → varDecl
+               | statement ;
+statement      → exprStmt
+               | printStmt ;
+               
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
-exprStmt  → expression (";" | "\n") ;
-printStmt → "print" expression (";"| "\n") ;
+exprStmt       → expression (";" | "\n") ;
+printStmt      → "print" expression (";"| "\n") ;
 
 expression     → equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
@@ -16,6 +20,8 @@ addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
 multiplication → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | primary ;
-primary        → NUMBER | STRING | "false" | "true" | "nil"
-               | "(" expression ")" ;
+primary        → "true" | "false" | "nil"
+               | NUMBER | STRING
+               | "(" expression ")"
+               | IDENTIFIER ;
 ```
