@@ -16,6 +16,6 @@ class ExpressionStmt: Stmt {
     }
     
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        fatalError("Unimplemented")
+        return try visitor.visitExpressionStmt(stmt: self)
     }
 }
