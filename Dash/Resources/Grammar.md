@@ -13,7 +13,9 @@ varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 exprStmt       → expression (";" | "\n") ;
 printStmt      → "print" expression (";"| "\n") ;
 
-expression     → equality ;
+expression     → assignment ;
+assignment     → IDENTIFIER "=" assignment
+               | equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
 addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
