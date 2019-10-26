@@ -28,6 +28,8 @@
 		039CB08B23560048002D6F59 /* Dash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08A23560048002D6F59 /* Dash.swift */; };
 		039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08C235607E7002D6F59 /* SysArgs.swift */; };
 		039CB08F235608D2002D6F59 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08E235608D2002D6F59 /* Errors.swift */; };
+		03A97EF72363FF29008F25EA /* VariableExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A97EF62363FF29008F25EA /* VariableExpr.swift */; };
+		03A97EFB2364115D008F25EA /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A97EFA2364115D008F25EA /* Environment.swift */; };
 		03C0974F236178970061F649 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C0974E236178970061F649 /* Parser.swift */; };
 		03D9EF232356C08E009BC05A /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF222356C08E009BC05A /* Scanner.swift */; };
 		03D9EF252356C09F009BC05A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF242356C09F009BC05A /* Token.swift */; };
@@ -70,6 +72,8 @@
 		039CB08A23560048002D6F59 /* Dash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dash.swift; sourceTree = "<group>"; };
 		039CB08C235607E7002D6F59 /* SysArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SysArgs.swift; sourceTree = "<group>"; };
 		039CB08E235608D2002D6F59 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		03A97EF62363FF29008F25EA /* VariableExpr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableExpr.swift; sourceTree = "<group>"; };
+		03A97EFA2364115D008F25EA /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		03C0974E236178970061F649 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		03D9EF222356C08E009BC05A /* Scanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
 		03D9EF242356C09F009BC05A /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -115,12 +119,13 @@
 		032A66292357384200226228 /* Expr */ = {
 			isa = PBXGroup;
 			children = (
+				032A663223573A8200226228 /* AstPrinter.swift */,
 				0318A92A235703EA00C3CBD4 /* Expr.swift */,
 				032A662A2357385100226228 /* BinaryExpr.swift */,
 				032A662C2357385F00226228 /* GroupingExpr.swift */,
 				032A662E2357387B00226228 /* LiteralExpr.swift */,
 				032A66302357388100226228 /* UnaryExpr.swift */,
-				032A663223573A8200226228 /* AstPrinter.swift */,
+				03A97EF62363FF29008F25EA /* VariableExpr.swift */,
 			);
 			name = Expr;
 			sourceTree = "<group>";
@@ -168,6 +173,7 @@
 			children = (
 				030640A12362C87100F49CE8 /* Stmt */,
 				032A66292357384200226228 /* Expr */,
+				03A97EFA2364115D008F25EA /* Environment.swift */,
 				03448A692361D7F000A4EA6F /* Interpreter.swift */,
 				03C0974E236178970061F649 /* Parser.swift */,
 				03D9EF222356C08E009BC05A /* Scanner.swift */,
@@ -236,6 +242,7 @@
 			files = (
 				032A66312357388100226228 /* UnaryExpr.swift in Sources */,
 				039CB08F235608D2002D6F59 /* Errors.swift in Sources */,
+				03A97EF72363FF29008F25EA /* VariableExpr.swift in Sources */,
 				039CB0842355FDF5002D6F59 /* main.swift in Sources */,
 				039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */,
 				030640A52362C9C900F49CE8 /* BlockStmt.swift in Sources */,
@@ -255,6 +262,7 @@
 				03D9EF272356CA23009BC05A /* Extensions.swift in Sources */,
 				030640A32362C87C00F49CE8 /* Stmt.swift in Sources */,
 				030640B12362CA1E00F49CE8 /* ReturnStmt.swift in Sources */,
+				03A97EFB2364115D008F25EA /* Environment.swift in Sources */,
 				032A662B2357385100226228 /* BinaryExpr.swift in Sources */,
 				032A662F2357387B00226228 /* LiteralExpr.swift in Sources */,
 				030640AB2362C9F100F49CE8 /* FunctionStmt.swift in Sources */,

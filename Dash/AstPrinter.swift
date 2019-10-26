@@ -40,4 +40,8 @@ extension AstPrinter: ExprVisitor {
     func visitUnaryExpr(expr: UnaryExpr) throws -> R {
         return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.right)
     }
+    
+    func visitVariableExpr(expr: VariableExpr) throws -> String {
+        return try self.parenthesise(name: "var \(expr.name.lexeme)")
+    }
 }

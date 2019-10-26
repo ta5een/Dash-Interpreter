@@ -9,7 +9,15 @@
 import Foundation
 
 class VarStmt: Stmt {
+    let token: Token
+    let initialiser: Expr?
+    
+    init(withToken token: Token, initialiser: Expr?) {
+        self.token = token
+        self.initialiser = initialiser
+    }
+    
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        fatalError("Unimplemented")
+        return try visitor.visitVarStmt(stmt: self)
     }
 }

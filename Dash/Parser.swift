@@ -24,7 +24,14 @@ class Parser {
         var statements: [Stmt] = []
         
         while !self.isAtEnd() {
-            statements.append(try self.statement())
+            if let declaration = self.declaration() {
+                statements.append(declaration)
+            } else {
+                Dash.logMessage(file: #file,
+                                function: #function,
+                                line: #line,
+                                message: "Fail to parse statements.")
+            }
         }
         
         return statements
@@ -82,7 +89,33 @@ class Parser {
     }
 }
 
+// MARK: - Statements
 private extension Parser {
+    func declaration() -> Stmt? {
+        do {
+            if self.match(.keyword(.var)) {
+                return try self.varDeclaration()
+            }
+            
+            return try self.statement()
+        } catch {
+            self.synchronise()
+            return nil
+        }
+    }
+    
+    func varDeclaration() throws -> Stmt {
+        let name = try self.consume(type: .literal(.identifier), message: "Expected variables name")
+        
+        var initialiser: Expr? = nil
+        if (self.match(.char(.equal))) {
+            initialiser = try self.expression()
+        }
+        
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after variable declaration")
+        return VarStmt(withToken: name, initialiser: initialiser)
+    }
+    
     func statement() throws -> Stmt {
         if self.match(.keyword(.print)) {
             return try self.printStatement()
@@ -106,6 +139,7 @@ private extension Parser {
     }
 }
 
+// MARK: - Expressions
 private extension Parser {
     func expression() throws -> Expr {
         return try self.equality()
@@ -178,6 +212,10 @@ private extension Parser {
             return LiteralExpr(withValue: self.previous().literal)
         }
         
+        if self.match(.literal(.identifier)) {
+            return VariableExpr(withName: self.previous())
+        }
+        
         if self.match(.char(.leftParen)) {
             let expr = try self.expression()
             try self.consume(type: .char(.rightParen), message: "Expected `)` after expression.")
@@ -188,12 +226,13 @@ private extension Parser {
     }
 }
 
+// MARK: - Synchronising
 private extension Parser {
     func synchronise() {
         self.advance()
         
         while !self.isAtEnd() {
-            if self.previous().type == .newline {
+            if self.previous().type == .char(.semicolon) {
                 return
             }
             
