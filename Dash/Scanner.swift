@@ -41,7 +41,7 @@ class Scanner {
         case "(":   self.addToken(type: .char(.leftParen))
         case ")":   self.addToken(type: .char(.rightParen))
         case "{":   self.addToken(type: .char(.leftBrace))
-        case "}":   self.addToken(type: .char(.rightParen))
+        case "}":   self.addToken(type: .char(.rightBrace))
         
         case "*":   self.addToken(type: .char(.asterisk))
         case ",":   self.addToken(type: .char(.comma))
