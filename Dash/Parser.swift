@@ -26,11 +26,6 @@ class Parser {
         while !self.isAtEnd() {
             if let declaration = self.declaration() {
                 statements.append(declaration)
-            } else {
-                Dash.logMessage(file: #file,
-                                function: #function,
-                                line: #line,
-                                message: "Fail to parse statements.")
             }
         }
         
@@ -121,7 +116,24 @@ private extension Parser {
             return try self.printStatement()
         }
         
+        if self.match(.char(.leftBrace)) {
+            return BlockStmt(withStatements: try self.blockStatement())
+        }
+        
         return try self.expressionStatement()
+    }
+    
+    func blockStatement() throws -> [Stmt] {
+        var statements: [Stmt] = []
+        
+        while !self.check(.char(.rightBrace)) && !self.isAtEnd() {
+            if let declaration = self.declaration() {
+                statements.append(declaration)
+            }
+        }
+        
+        try self.consume(type: .char(.rightBrace), message: "Expected `}` after block.")
+        return statements
     }
     
     func printStatement() throws -> Stmt {

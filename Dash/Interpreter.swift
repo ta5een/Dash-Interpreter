@@ -14,7 +14,7 @@ enum RuntimeError: Error {
 }
 
 class Interpreter {
-    private let environment: Environment = Environment()
+    private var environment: Environment = Environment()
     
     public func interpret(statements: [Stmt]) {
         do {
@@ -34,6 +34,18 @@ class Interpreter {
     
     private func execute(stmt: Stmt) throws {
         try stmt.accept(visitor: self)
+    }
+    
+    private func executeBlock(withStatements statements: [Stmt], environment: Environment) {
+        let previous = self.environment
+        defer { self.environment = previous }
+        
+        do {
+            self.environment = environment
+            try statements.forEach { try self.execute(stmt: $0) }
+        } catch {
+            Dash.reportError(location: nil, message: "Failed to execute statement(s) in current environment scope.")
+        }
     }
     
     @discardableResult
@@ -169,7 +181,7 @@ extension Interpreter: StmtVisitor {
     typealias StmtResult = Void
     
     func visitBlockStmt(stmt: BlockStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        self.executeBlock(withStatements: stmt.statements, environment: Environment(withEnclosingEnvironment: self.environment))
     }
     
     func visitClassStmt(stmt: ClassStmt) throws -> StmtResult {
