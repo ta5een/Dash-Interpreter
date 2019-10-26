@@ -10,9 +10,12 @@ import Foundation
 
 enum RuntimeError: Error {
     case invalidOperand(token: Token, message: String, help: String? = nil)
+    case undefinedVariable(token: Token)
 }
 
 class Interpreter {
+    private let environment: Environment = Environment()
+    
     public func interpret(statements: [Stmt]) {
         do {
             try statements.forEach { try self.execute(stmt: $0) }
@@ -148,6 +151,10 @@ extension Interpreter: ExprVisitor {
             fatalError("Unreachable")
         }
     }
+    
+    func visitVariableExpr(expr: VariableExpr) throws -> ExprResult {
+        return try self.environment.getValue(withName: expr.name)
+    }
 }
 
 extension Interpreter: StmtVisitor {
@@ -183,7 +190,13 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitVarStmt(stmt: VarStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        var value: Any? = nil
+        
+        if let initialiser = stmt.initialiser {
+            value = try self.evaluate(expr: initialiser)
+        }
+        
+        self.environment.define(name: stmt.token.lexeme, withValue: value)
     }
     
     func visitWhileStmt(stmt: WhileStmt) throws -> StmtResult {
