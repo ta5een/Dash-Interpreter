@@ -27,7 +27,7 @@ extension LiteralExpr: CustomStringConvertible {
         if let value = self.value {
             return value.description
         } else {
-            return "nothing"
+            return "(nothing)"
         }
     }
 }

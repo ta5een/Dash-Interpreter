@@ -28,7 +28,7 @@ class Interpreter {
         if let object = object {
             return String(describing: object)
         } else {
-            return "nothing"
+            return "(nothing)"
         }
     }
     
