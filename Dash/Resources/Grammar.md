@@ -6,10 +6,12 @@ program        → declaration* EOF ;
 declaration    → varDecl
                | statement ;
 statement      → exprStmt
-               | printStmt ;
+               | printStmt
+               | block ;
                
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
+block          → "{" declaration* "}" ;
 exprStmt       → expression (";" | "\n") ;
 printStmt      → "print" expression (";"| "\n") ;
 

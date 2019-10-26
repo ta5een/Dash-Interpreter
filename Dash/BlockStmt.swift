@@ -9,7 +9,13 @@
 import Foundation
 
 class BlockStmt: Stmt {
+    let statements: [Stmt]
+    
+    init(withStatements statements: [Stmt]) {
+        self.statements = statements
+    }
+    
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        fatalError("Unimplemented")
+        return try visitor.visitBlockStmt(stmt: self)
     }
 }
