@@ -77,7 +77,8 @@ class Scanner {
         self.tokens.append(Token(withType: type,
                                  lexeme: lexeme ?? self.source[self.start ..< self.current],
                                  literal: literal,
-                                 line: self.line))
+                                 line: self.line,
+                                 column: self.column))
     }
 }
 

@@ -89,12 +89,14 @@ class Token {
     let lexeme: String
     let literal: LiteralType?
     let line: Int
+    let column: Int
     
-    init(withType type: TokenType, lexeme: String, literal: LiteralType?, line: Int) {
+    init(withType type: TokenType, lexeme: String, literal: LiteralType?, line: Int, column: Int) {
         self.type = type
         self.lexeme = lexeme
         self.literal = literal
         self.line = line
+        self.column = column
     }
 }
 

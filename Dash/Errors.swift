@@ -12,12 +12,12 @@ extension SysArgsError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidNumberOfArgs(let expected, let given, let helpMessage):
-            let errorMessage = "Invalid number of arguments: expected \(expected), found \(given)"
+            let errorMessage = "Invalid number of arguments: expected \(expected), found \(given)."
             return Dash.constructErrorMessage(location: nil,
                                               message: errorMessage,
                                               help: helpMessage)
         case .unknownArg(let arg):
-            let errorMessage = "Unknown argument `\(arg)`"
+            let errorMessage = "Unknown argument `\(arg)`."
             return Dash.constructErrorMessage(location: nil, message: errorMessage)
         }
     }
@@ -44,9 +44,17 @@ extension RuntimeError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidOperand(token: let token, message: let message, help: let help):
-            return Dash.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
-                                              message: message,
-                                              help: help)
+            return Dash.constructErrorMessage(
+                location: ErrorLocation(line: token.line, column: nil),
+                message: message,
+                help: help
+            )
+        case .undefinedVariable(token: let token):
+            return Dash.constructErrorMessage(
+                location: ErrorLocation(line: token.line, column: nil),
+                message: "Undefined variable `\(token.lexeme)`.",
+                help: "The variable `\(token.lexeme)` could not be found in the current scope."
+            )
         }
     }
 }

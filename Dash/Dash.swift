@@ -97,6 +97,31 @@ class Dash {
         if self.errorFound { return }
     }
     
+    static func logMessage(file: String? = nil, function: String? = nil, line: Int? = nil, message: String) {
+        let escapeSeq = "\u{001B}"
+        let b = "\(escapeSeq)[1;34m"    // blue
+        let x = "\(escapeSeq)[0;0m"     // reset/none
+        
+        let log: (String?) -> String = { location in
+            return """
+            \(b)    log:\(x) \(message)
+            \(b)  where:\(x) \(location ?? "")
+            
+            """
+        }
+        
+        switch (file, function, line) {
+        case (.some(let file), .some(let function), .some(let line)):
+            print(log("\(file).\(function), line \(line)"))
+        case (.some(let file), .some(let function), .none):
+            print(log("\(file).\(function)"))
+        case (.some(let file), .none, .none):
+            print(log("\(file)"))
+        default:
+            print(log(nil))
+        }
+    }
+    
     static func reportError(location: ErrorLocation?, message: String, help: String? = nil) {
         print(self.constructErrorMessage(location: location, message: message, help: help))
         self.errorFound = true
@@ -105,9 +130,19 @@ class Dash {
     static func reportRuntimeError(error: RuntimeError) {
         switch error {
         case .invalidOperand(token: let token, message: let message, help: let help):
-            print(self.constructErrorMessage(location: ErrorLocation(line: token.line, column: nil),
-                                        message: message,
-                                        help: help))
+            let message = self.constructErrorMessage(
+                location: ErrorLocation(line: token.line, column: token.column),
+                message: message,
+                help: help
+            )
+            print(message)
+        case .undefinedVariable(token: let token):
+            let message = self.constructErrorMessage(
+                location: ErrorLocation(line: token.line, column: token.column),
+                message: "Undefined variable `\(token.lexeme)`.",
+                help: "The variable named `\(token.lexeme)` could not be found in the current scope."
+            )
+            print(message)
         }
         
         self.hadRuntimeError = true
