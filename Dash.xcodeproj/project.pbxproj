@@ -30,6 +30,7 @@
 		039CB08F235608D2002D6F59 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CB08E235608D2002D6F59 /* Errors.swift */; };
 		03A97EF72363FF29008F25EA /* VariableExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A97EF62363FF29008F25EA /* VariableExpr.swift */; };
 		03A97EFB2364115D008F25EA /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A97EFA2364115D008F25EA /* Environment.swift */; };
+		03A97EFD23644237008F25EA /* AssignExpr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A97EFC23644237008F25EA /* AssignExpr.swift */; };
 		03C0974F236178970061F649 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C0974E236178970061F649 /* Parser.swift */; };
 		03D9EF232356C08E009BC05A /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF222356C08E009BC05A /* Scanner.swift */; };
 		03D9EF252356C09F009BC05A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9EF242356C09F009BC05A /* Token.swift */; };
@@ -74,6 +75,7 @@
 		039CB08E235608D2002D6F59 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		03A97EF62363FF29008F25EA /* VariableExpr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableExpr.swift; sourceTree = "<group>"; };
 		03A97EFA2364115D008F25EA /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		03A97EFC23644237008F25EA /* AssignExpr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignExpr.swift; sourceTree = "<group>"; };
 		03C0974E236178970061F649 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		03D9EF222356C08E009BC05A /* Scanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
 		03D9EF242356C09F009BC05A /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			children = (
 				032A663223573A8200226228 /* AstPrinter.swift */,
 				0318A92A235703EA00C3CBD4 /* Expr.swift */,
+				03A97EFC23644237008F25EA /* AssignExpr.swift */,
 				032A662A2357385100226228 /* BinaryExpr.swift */,
 				032A662C2357385F00226228 /* GroupingExpr.swift */,
 				032A662E2357387B00226228 /* LiteralExpr.swift */,
@@ -247,6 +250,7 @@
 				039CB08D235607E7002D6F59 /* SysArgs.swift in Sources */,
 				030640A52362C9C900F49CE8 /* BlockStmt.swift in Sources */,
 				030640AD2362CA0500F49CE8 /* IfStmt.swift in Sources */,
+				03A97EFD23644237008F25EA /* AssignExpr.swift in Sources */,
 				03D9EF252356C09F009BC05A /* Token.swift in Sources */,
 				030640A72362C9D300F49CE8 /* ClassStmt.swift in Sources */,
 				0318A92B235703EA00C3CBD4 /* Expr.swift in Sources */,

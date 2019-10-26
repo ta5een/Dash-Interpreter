@@ -15,6 +15,15 @@ class Environment {
         self.values[name] = value
     }
     
+    func assign(name: Token, withValue value: Any?) throws {
+        if let _ = self.values[name.lexeme] {
+            self.values[name.lexeme] = value
+            return
+        }
+        
+        throw RuntimeError.undefinedVariable(token: name)
+    }
+    
     func getValue(withName name: Token) throws -> Any? {
         if let value = self.values[name.lexeme] {
             return value

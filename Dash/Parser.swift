@@ -142,7 +142,27 @@ private extension Parser {
 // MARK: - Expressions
 private extension Parser {
     func expression() throws -> Expr {
-        return try self.equality()
+        return try self.assignment()
+    }
+    
+    func assignment() throws -> Expr {
+        let expr = try self.equality()
+        
+        if self.match(.char(.equal)) {
+            let equals = self.previous()
+            let value = try self.assignment()
+            
+            if expr is VariableExpr {
+                let name = (expr as! VariableExpr).name
+                return AssignExpr(withName: name, value: value)
+            }
+            
+            Dash.reportError(location: ErrorLocation(line: equals.line, column: equals.column),
+                             message: "Invalid assignment target",
+                             help: nil)
+        }
+        
+        return expr
     }
     
     func equality() throws -> Expr {

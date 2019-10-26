@@ -24,6 +24,10 @@ class AstPrinter {
 
 extension AstPrinter: ExprVisitor {
     typealias R = String
+    
+    func visitAssignExpr(expr: AssignExpr) throws -> R {
+        fatalError("Unimplemented")
+    }
 
     func visitBinaryExpr(expr: BinaryExpr) throws -> R {
         return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.left, expr.right)

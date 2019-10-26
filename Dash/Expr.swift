@@ -10,7 +10,8 @@ import Foundation
 
 protocol ExprVisitor {
     associatedtype ExprResult
-    
+
+    func visitAssignExpr(expr: AssignExpr) throws -> ExprResult
     func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult
     func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult
     func visitLiteralExpr(expr: LiteralExpr) throws -> ExprResult

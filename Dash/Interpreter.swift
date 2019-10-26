@@ -78,8 +78,15 @@ class Interpreter {
     }
 }
 
+// MARK: - Interpreter + ExprVisitor
 extension Interpreter: ExprVisitor {
     typealias ExprResult = Any?
+    
+    func visitAssignExpr(expr: AssignExpr) throws -> ExprResult {
+        let value = try self.evaluate(expr: expr.value)
+        try self.environment.assign(name: expr.name, withValue: value)
+        return value
+    }
 
     func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult {
         let left = try self.evaluate(expr: expr.left)
@@ -157,6 +164,7 @@ extension Interpreter: ExprVisitor {
     }
 }
 
+// MARK: - Interpreter + StmtVisitor
 extension Interpreter: StmtVisitor {
     typealias StmtResult = Void
     
