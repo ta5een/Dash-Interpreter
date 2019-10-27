@@ -15,6 +15,7 @@ protocol ExprVisitor {
     func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult
     func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult
     func visitLiteralExpr(expr: LiteralExpr) throws -> ExprResult
+    func visitLogicalExpr(expr: LogicalExpr) throws -> ExprResult
     func visitUnaryExpr(expr: UnaryExpr) throws -> ExprResult
     func visitVariableExpr(expr: VariableExpr) throws -> ExprResult
 }

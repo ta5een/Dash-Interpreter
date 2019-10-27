@@ -40,6 +40,10 @@ extension AstPrinter: ExprVisitor {
     func visitLiteralExpr(expr: LiteralExpr) throws -> R {
         return expr.description
     }
+    
+    func visitLogicalExpr(expr: LogicalExpr) throws -> String {
+        fatalError("Unimplemented")
+    }
 
     func visitUnaryExpr(expr: UnaryExpr) throws -> R {
         return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.right)

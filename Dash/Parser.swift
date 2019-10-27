@@ -112,6 +112,10 @@ private extension Parser {
     }
     
     func statement() throws -> Stmt {
+        if self.match(.keyword(.if)) {
+            return try self.ifStatement()
+        }
+        
         if self.match(.keyword(.print)) {
             return try self.printStatement()
         }
@@ -121,6 +125,34 @@ private extension Parser {
         }
         
         return try self.expressionStatement()
+    }
+    
+    func expressionStatement() throws -> Stmt {
+        let expr = try self.expression()
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        
+        return ExpressionStmt(withExpr: expr)
+    }
+    
+    func ifStatement() throws -> Stmt {
+        try self.consume(type: .char(.leftParen), message: "Expected `(` after 'if'.")
+        let condition = try self.expression()
+        try self.consume(type: .char(.rightParen), message: "Expected `)` after if condition.")
+        
+        let thenBranch = try self.statement()
+        var elseBranch: Stmt? = nil
+        if self.match(.keyword(.else)) {
+            elseBranch = try self.statement()
+        }
+        
+        return IfStmt(withCondition: condition, thenBranch: thenBranch, elseBranch: elseBranch)
+    }
+    
+    func printStatement() throws -> Stmt {
+        let value = try self.expression()
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        
+        return PrintStmt(withExpr: value)
     }
     
     func blockStatement() throws -> [Stmt] {
@@ -135,20 +167,6 @@ private extension Parser {
         try self.consume(type: .char(.rightBrace), message: "Expected `}` after block.")
         return statements
     }
-    
-    func printStatement() throws -> Stmt {
-        let value = try self.expression()
-        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
-        
-        return PrintStmt(withExpr: value)
-    }
-    
-    func expressionStatement() throws -> Stmt {
-        let expr = try self.expression()
-        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
-        
-        return ExpressionStmt(withExpr: expr)
-    }
 }
 
 // MARK: - Expressions
@@ -158,7 +176,7 @@ private extension Parser {
     }
     
     func assignment() throws -> Expr {
-        let expr = try self.equality()
+        let expr = try self.or()
         
         if self.match(.char(.equal)) {
             let equals = self.previous()
@@ -172,6 +190,30 @@ private extension Parser {
             Dash.reportError(location: ErrorLocation(line: equals.line, column: equals.column),
                              message: "Invalid assignment target",
                              help: nil)
+        }
+        
+        return expr
+    }
+    
+    func or() throws -> Expr {
+        var expr = try self.and()
+        
+        while self.match(.keyword(.or)) {
+            let `operator` = self.previous()
+            let right = try self.and()
+            expr = LogicalExpr(left: expr, operator: `operator`, right: right)
+        }
+        
+        return expr
+    }
+    
+    func and() throws -> Expr {
+        var expr = try self.equality()
+        
+        while self.match(.keyword(.and)) {
+            let `operator` = self.previous()
+            let right = try self.equality()
+            expr = LogicalExpr(left: expr, operator: `operator`, right: right)
         }
         
         return expr

@@ -155,6 +155,22 @@ extension Interpreter: ExprVisitor {
     func visitLiteralExpr(expr: LiteralExpr) throws -> ExprResult {
         return expr.value
     }
+    
+    func visitLogicalExpr(expr: LogicalExpr) throws -> Any? {
+        let left = try self.evaluate(expr: expr.left)
+        
+        if expr.operator.type == .keyword(.or) {
+            if self.isTruthy(left) {
+                return left
+            }
+        } else {
+            if !self.isTruthy(left) {
+                return left
+            }
+        }
+        
+        return try self.evaluate(expr: expr.right)
+    }
 
     func visitUnaryExpr(expr: UnaryExpr) throws -> ExprResult {
         // TODO: `right` should be `Any?` to allow `nil` values
@@ -197,7 +213,11 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitIfStmt(stmt: IfStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        if self.isTruthy(try self.evaluate(expr: stmt.condition)) {
+            try self.execute(stmt: stmt.thenBranch)
+        } else if let elseBranch = stmt.elseBranch {
+            try self.execute(stmt: elseBranch)
+        }
     }
     
     func visitPrintStmt(stmt: PrintStmt) throws -> StmtResult {
