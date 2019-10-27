@@ -240,6 +240,8 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitWhileStmt(stmt: WhileStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        while self.isTruthy(try self.evaluate(expr: stmt.condition)) {
+            try self.execute(stmt: stmt.body)
+        }
     }
 }

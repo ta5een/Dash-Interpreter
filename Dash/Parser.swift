@@ -120,6 +120,10 @@ private extension Parser {
             return try self.printStatement()
         }
         
+        if self.match(.keyword(.while)) {
+            return try self.whileStatement()
+        }
+        
         if self.match(.char(.leftBrace)) {
             return BlockStmt(withStatements: try self.blockStatement())
         }
@@ -150,9 +154,18 @@ private extension Parser {
     
     func printStatement() throws -> Stmt {
         let value = try self.expression()
-        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value.")
         
         return PrintStmt(withExpr: value)
+    }
+    
+    func whileStatement() throws -> Stmt {
+        try self.consume(type: .char(.leftParen), message: "Expected `(` after 'while'.")
+        let condition = try self.expression()
+        try self.consume(type: .char(.rightParen), message: "Expected `)` after while condition.")
+        let body = try self.statement()
+        
+        return WhileStmt(withCondition: condition, body: body)
     }
     
     func blockStatement() throws -> [Stmt] {

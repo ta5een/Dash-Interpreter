@@ -9,7 +9,15 @@
 import Foundation
 
 class WhileStmt: Stmt {
+    let condition: Expr
+    let body: Stmt
+    
+    init(withCondition condition: Expr, body: Stmt) {
+        self.condition = condition
+        self.body = body
+    }
+    
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        fatalError("Unimplemented")
+        return try visitor.visitWhileStmt(stmt: self)
     }
 }
