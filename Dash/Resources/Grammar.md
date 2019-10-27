@@ -5,15 +5,17 @@ program        → declaration* EOF ;
 
 declaration    → varDecl
                | statement ;
+               
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 statement      → exprStmt
+               | ifStmt
                | printStmt
                | block ;
                
-varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
-
-block          → "{" declaration* "}" ;
 exprStmt       → expression (";" | "\n") ;
+ifStmt         → "if" "(" expression ")" statement ( "else" statement )? ;
 printStmt      → "print" expression (";"| "\n") ;
+block          → "{" declaration* "}" ;
 
 expression     → assignment ;
 assignment     → IDENTIFIER "=" assignment
