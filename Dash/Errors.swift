@@ -43,9 +43,11 @@ extension ParseError: LocalizedError {
 extension RuntimeError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .invalidOperand(token: let token, message: let message, help: let help):
+        case .invalidOperand(token: let token, message: let message, help: let help),
+             .invalidCall(token: let token, message: let message, help: let help),
+             .invalidNumberOfArguments(token: let token, message: let message, help: let help):
             return Dash.constructErrorMessage(
-                location: ErrorLocation(line: token.line, column: nil),
+                location: ErrorLocation(line: token.line, column: token.column),
                 message: message,
                 help: help
             )

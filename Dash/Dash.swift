@@ -128,21 +128,25 @@ class Dash {
     }
     
     static func reportRuntimeError(error: RuntimeError) {
-        switch error {
-        case .invalidOperand(token: let token, message: let message, help: let help):
+        func printMessage(token: Token, message: String, help: String? = nil) {
             let message = self.constructErrorMessage(
                 location: ErrorLocation(line: token.line, column: token.column),
                 message: message,
                 help: help
             )
+            
             print(message)
+        }
+        
+        switch error {
+        case .invalidOperand(token: let token, message: let message, help: let help),
+             .invalidCall(token: let token, message: let message, help: let help),
+             .invalidNumberOfArguments(token: let token, message: let message, help: let help):
+            printMessage(token: token, message: message, help: help)
         case .undefinedVariable(token: let token):
-            let message = self.constructErrorMessage(
-                location: ErrorLocation(line: token.line, column: token.column),
-                message: "Undefined variable `\(token.lexeme)`.",
-                help: "The variable named `\(token.lexeme)` could not be found in the current scope."
-            )
-            print(message)
+            printMessage(token: token,
+                         message: "Undefined variable `\(token.lexeme)`.",
+                         help: "The variable named `\(token.lexeme)` could not be found in the current scope.")
         }
         
         self.hadRuntimeError = true

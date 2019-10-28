@@ -98,6 +98,10 @@ extension AstPrinter: ExprVisitor {
     func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult {
         return try self.parenthesise(name: expr.operator.lexeme, exprs: expr.left, expr.right)
     }
+    
+    func visitCallExpr(expr: CallExpr) throws -> String {
+        fatalError("Unimplemented")
+    }
 
     func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult {
         return try self.parenthesise(name: ":", exprs: expr.expression)

@@ -13,6 +13,7 @@ protocol ExprVisitor {
 
     func visitAssignExpr(expr: AssignExpr) throws -> ExprResult
     func visitBinaryExpr(expr: BinaryExpr) throws -> ExprResult
+    func visitCallExpr(expr: CallExpr) throws -> ExprResult
     func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult
     func visitLiteralExpr(expr: LiteralExpr) throws -> ExprResult
     func visitLogicalExpr(expr: LogicalExpr) throws -> ExprResult

@@ -22,7 +22,7 @@ class SysArgs {
     var inputSource: InputSource = .stdin
     
     init?(parse args: [String]) throws {
-        func getArgumentsForParamater(atIndex index: Int, help msg: String) throws -> String {
+        func getArgumentsForParameter(atIndex index: Int, help msg: String) throws -> String {
             guard !(index == (args.endIndex - 1)) && !(args[index + 1].starts(with: "-")) else {
                 throw SysArgsError.invalidNumberOfArgs(1, 0, msg)
             }
@@ -35,7 +35,7 @@ class SysArgs {
                 switch arg {
                 case "-f", "--file":
                     let helpMessage = "Parameter 'file' (with `-f` or `--file`) requires a path to the Dash script"
-                    self.inputSource = .file(path: try getArgumentsForParamater(atIndex: i, help: helpMessage))
+                    self.inputSource = .file(path: try getArgumentsForParameter(atIndex: i, help: helpMessage))
                 case "-r", "--read":
                     self.inputSource = .stdin
                 default:

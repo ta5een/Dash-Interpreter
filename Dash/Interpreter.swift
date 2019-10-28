@@ -10,11 +10,21 @@ import Foundation
 
 enum RuntimeError: Error {
     case invalidOperand(token: Token, message: String, help: String? = nil)
+    case invalidCall(token: Token, message: String, help: String? = nil)
+    case invalidNumberOfArguments(token: Token, message: String, help: String? = nil)
     case undefinedVariable(token: Token)
 }
 
 class Interpreter {
-    private var environment: Environment = Environment()
+    let globals: Environment = Environment()
+    private var environment: Environment
+    
+    init() {
+        self.globals.define(name: "clock", withValue: ClockNativeFun())
+        self.globals.define(name: "print", withValue: PrintNativeFun())
+        self.globals.define(name: "println", withValue: PrintLnNativeFun())
+        self.environment = self.globals
+    }
     
     public func interpret(statements: [Stmt]) {
         do {
@@ -32,11 +42,11 @@ class Interpreter {
         }
     }
     
-    private func execute(stmt: Stmt) throws {
+    func execute(stmt: Stmt) throws {
         try stmt.accept(visitor: self)
     }
     
-    private func executeBlock(withStatements statements: [Stmt], environment: Environment) {
+    func executeBlock(withStatements statements: [Stmt], environment: Environment) {
         let previous = self.environment
         defer { self.environment = previous }
         
@@ -147,6 +157,32 @@ extension Interpreter: ExprVisitor {
             fatalError("Unreachable")
         }
     }
+    
+    func visitCallExpr(expr: CallExpr) throws -> ExprResult {
+        let callee = try self.evaluate(expr: expr.callee)
+        
+        var args = [Any?]()
+        for arg in expr.args {
+            args.append(try self.evaluate(expr: arg))
+        }
+        
+        if let function = callee as? Callable {
+            if args.count != function.arity {
+                throw RuntimeError.invalidNumberOfArguments(
+                    token: expr.paren,
+                    message: "Invalid number of arguments.",
+                    help: "Expected \(function.arity) arguments, but found \(args.count)."
+                )
+            }
+            return function.call(interpreter: self, arguments: args)
+        } else {
+            throw RuntimeError.invalidCall(
+                token: expr.paren,
+                message: "Invalid call to value.",
+                help: "You can only call functions and class methods."
+            )
+        }
+    }
 
     func visitGroupingExpr(expr: GroupingExpr) throws -> ExprResult {
         return try self.evaluate(expr: expr.expression)
@@ -209,7 +245,8 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitFunctionStmt(stmt: FunctionStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        let function = Function(withDeclaration: stmt)
+        self.environment.define(name: stmt.name.lexeme, withValue: function)
     }
     
     func visitIfStmt(stmt: IfStmt) throws -> StmtResult {

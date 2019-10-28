@@ -16,6 +16,8 @@ class Parser {
     private let tokens: [Token]
     private var current: Int = 0
     
+    let maximumFunArgCount: Int = 255
+    
     init(withTokens tokens: [Token]) {
         self.tokens = tokens
     }
@@ -54,6 +56,25 @@ class Parser {
         return ParseError.parseError(token: token, message: message)
     }
     
+    private func finishCall(withCallee callee: Expr) throws -> Expr {
+        var args = [Expr]()
+        
+        // Check if the argument list is empty (i.e. the next token is `)`), and don't parse arguments if there is one.
+        if !self.check(.char(.rightParen)) {
+            repeat {
+                if args.count >= self.maximumFunArgCount {
+                    let peek = self.peek()
+                    Dash.reportError(location: ErrorLocation(line: peek.line, column: peek.column),
+                                     message: "Functions can have no more than 255 arguments.")
+                }
+                args.append(try self.expression())
+            } while self.match(.char(.comma))
+        }
+        
+        let paren = try self.consume(type: .char(.rightParen), message: "Expected `)` after arguments.")
+        return CallExpr(withCallee: callee, paren: paren, args: args)
+    }
+    
     private func check(_ type: TokenType) -> Bool {
         if self.isAtEnd() {
             return false
@@ -88,6 +109,10 @@ class Parser {
 private extension Parser {
     func declaration() -> Stmt? {
         do {
+            if self.match(.keyword(.fun)) {
+                return try self.function(kind: .function)
+            }
+            
             if self.match(.keyword(.var)) {
                 return try self.varDeclaration()
             }
@@ -97,6 +122,29 @@ private extension Parser {
             self.synchronise()
             return nil
         }
+    }
+    
+    func function(kind: CallableKind) throws -> FunctionStmt {
+        let name = try self.consume(type: .literal(.identifier), message: "Expected \(kind.description) name.")
+        try self.consume(type: .char(.leftParen), message: "Expected `(` after \(kind.description) name.")
+        
+        var params = [Token]()
+        if !self.check(.char(.rightParen)) {
+            repeat {
+                if params.count >= self.maximumFunArgCount {
+                    let peek = self.peek()
+                    Dash.reportError(location: ErrorLocation(line: peek.line, column: peek.column),
+                                     message: "Functions can have no more than 255 arguments.")
+                }
+                params.append(try self.consume(type: .literal(.identifier), message: "Expected parameter name."))
+            } while self.match(.char(.comma))
+        }
+        
+        try self.consume(type: .char(.rightParen), message: "Expected `)` after parameter list.")
+        
+        try self.consume(type: .char(.leftBrace), message: "Expected `{` before \(kind.description) body.")
+        let body = try self.blockStatement()
+        return FunctionStmt(withName: name, params: params, body: body)
     }
     
     func varDeclaration() throws -> Stmt {
@@ -335,7 +383,24 @@ private extension Parser {
             return UnaryExpr(withOperator: op, rightExpr: right)
         }
         
-        return try self.primary()
+        return try self.call()
+    }
+    
+    func call() throws -> Expr {
+        // First, parse left operand to the call (the primary expression)
+        var expr = try self.primary()
+        
+        while true {
+            if self.match(.char(.leftParen)) {
+                // Each time we see a `(`, we call `finishCall(expr:) to parse the call expression using the previously
+                // parsed expression as the callee.
+                expr = try self.finishCall(withCallee: expr)
+            } else {
+                break
+            }
+        }
+        
+        return expr
     }
     
     func primary() throws -> Expr {
