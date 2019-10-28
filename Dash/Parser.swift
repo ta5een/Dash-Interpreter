@@ -168,7 +168,7 @@ private extension Parser {
             return try self.ifStatement()
         }
         
-        if self.match(.keyword(.print)) {
+        if self.match(.keyword(.show)) {
             return try self.printStatement()
         }
         
@@ -438,7 +438,7 @@ private extension Parser {
             
             switch self.peek().type {
             case .keyword(.class), .keyword(.fun), .keyword(.var), .keyword(.for), .keyword(.if), .keyword(.while),
-                 .keyword(.print), .keyword(.return):
+                 .keyword(.show), .keyword(.return):
                 return
             default:
                 self.advance()
