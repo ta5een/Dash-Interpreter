@@ -169,7 +169,7 @@ private extension Parser {
         }
         
         if self.match(.keyword(.show)) {
-            return try self.printStatement()
+            return try self.showStatement()
         }
         
         if self.match(.keyword(.while)) {
@@ -248,11 +248,11 @@ private extension Parser {
         return IfStmt(withCondition: condition, thenBranch: thenBranch, elseBranch: elseBranch)
     }
     
-    func printStatement() throws -> Stmt {
+    func showStatement() throws -> Stmt {
         let value = try self.expression()
         try self.consume(type: .char(.semicolon), message: "Expected `;` after value.")
         
-        return PrintStmt(withExpr: value)
+        return ShowStmt(withExpr: value)
     }
     
     func whileStatement() throws -> Stmt {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PrintStmt: Stmt {
+class ShowStmt: Stmt {
     var expression: Expr
     
     init(withExpr expr: Expr) {
@@ -16,6 +16,6 @@ class PrintStmt: Stmt {
     }
 
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        return try visitor.visitPrintStmt(stmt: self)
+        return try visitor.visitShowStmt(stmt: self)
     }
 }

@@ -71,12 +71,12 @@ extension AstPrinter: StmtVisitor {
         }
     }
     
-    func visitPrintStmt(stmt: PrintStmt) throws -> StmtResult {
-        return try self.parenthesise(name: "print", exprs: stmt.expression)
-    }
-    
     func visitReturnStmt(stmt: ReturnStmt) throws -> StmtResult {
         fatalError("Unimplemented")
+    }
+    
+    func visitShowStmt(stmt: ShowStmt) throws -> StmtResult {
+        return try self.parenthesise(name: "print", exprs: stmt.expression)
     }
     
     func visitVarStmt(stmt: VarStmt) throws -> StmtResult {

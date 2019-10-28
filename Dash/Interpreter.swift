@@ -257,13 +257,13 @@ extension Interpreter: StmtVisitor {
         }
     }
     
-    func visitPrintStmt(stmt: PrintStmt) throws -> StmtResult {
-        let value = try self.evaluate(expr: stmt.expression)
-        print(self.stringify(object: value))
-    }
-    
     func visitReturnStmt(stmt: ReturnStmt) throws -> StmtResult {
         fatalError("Unimplemented")
+    }
+    
+    func visitShowStmt(stmt: ShowStmt) throws -> StmtResult {
+        let value = try self.evaluate(expr: stmt.expression)
+        print(self.stringify(object: value))
     }
     
     func visitVarStmt(stmt: VarStmt) throws -> StmtResult {

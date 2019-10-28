@@ -13,7 +13,7 @@
 		030640A92362C9E000F49CE8 /* ExpressionStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640A82362C9DF00F49CE8 /* ExpressionStmt.swift */; };
 		030640AB2362C9F100F49CE8 /* FunctionStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640AA2362C9F100F49CE8 /* FunctionStmt.swift */; };
 		030640AD2362CA0500F49CE8 /* IfStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640AC2362CA0500F49CE8 /* IfStmt.swift */; };
-		030640AF2362CA0C00F49CE8 /* PrintStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640AE2362CA0C00F49CE8 /* PrintStmt.swift */; };
+		030640AF2362CA0C00F49CE8 /* ShowStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640AE2362CA0C00F49CE8 /* ShowStmt.swift */; };
 		030640B12362CA1E00F49CE8 /* ReturnStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640B02362CA1E00F49CE8 /* ReturnStmt.swift */; };
 		030640B32362CA2300F49CE8 /* VarStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640B22362CA2300F49CE8 /* VarStmt.swift */; };
 		030640B52362CA2B00F49CE8 /* WhileStmt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030640B42362CA2B00F49CE8 /* WhileStmt.swift */; };
@@ -58,7 +58,7 @@
 		030640A82362C9DF00F49CE8 /* ExpressionStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionStmt.swift; sourceTree = "<group>"; };
 		030640AA2362C9F100F49CE8 /* FunctionStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionStmt.swift; sourceTree = "<group>"; };
 		030640AC2362CA0500F49CE8 /* IfStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfStmt.swift; sourceTree = "<group>"; };
-		030640AE2362CA0C00F49CE8 /* PrintStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintStmt.swift; sourceTree = "<group>"; };
+		030640AE2362CA0C00F49CE8 /* ShowStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowStmt.swift; sourceTree = "<group>"; };
 		030640B02362CA1E00F49CE8 /* ReturnStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnStmt.swift; sourceTree = "<group>"; };
 		030640B22362CA2300F49CE8 /* VarStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarStmt.swift; sourceTree = "<group>"; };
 		030640B42362CA2B00F49CE8 /* WhileStmt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhileStmt.swift; sourceTree = "<group>"; };
@@ -106,7 +106,7 @@
 				030640A82362C9DF00F49CE8 /* ExpressionStmt.swift */,
 				030640AA2362C9F100F49CE8 /* FunctionStmt.swift */,
 				030640AC2362CA0500F49CE8 /* IfStmt.swift */,
-				030640AE2362CA0C00F49CE8 /* PrintStmt.swift */,
+				030640AE2362CA0C00F49CE8 /* ShowStmt.swift */,
 				030640B02362CA1E00F49CE8 /* ReturnStmt.swift */,
 				030640B22362CA2300F49CE8 /* VarStmt.swift */,
 				030640B42362CA2B00F49CE8 /* WhileStmt.swift */,
@@ -263,7 +263,7 @@
 				0318A92B235703EA00C3CBD4 /* Expr.swift in Sources */,
 				030640B32362CA2300F49CE8 /* VarStmt.swift in Sources */,
 				030640A92362C9E000F49CE8 /* ExpressionStmt.swift in Sources */,
-				030640AF2362CA0C00F49CE8 /* PrintStmt.swift in Sources */,
+				030640AF2362CA0C00F49CE8 /* ShowStmt.swift in Sources */,
 				03C0974F236178970061F649 /* Parser.swift in Sources */,
 				032A663323573A8200226228 /* AstPrinter.swift in Sources */,
 				03D9EF232356C08E009BC05A /* Scanner.swift in Sources */,
