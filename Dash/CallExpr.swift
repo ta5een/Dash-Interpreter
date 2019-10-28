@@ -99,7 +99,14 @@ class Function: Callable, CustomStringConvertible {
             environment.define(name: param.lexeme, withValue: arguments[i])
         }
         
-        interpreter.executeBlock(withStatements: self.declaration.body, environment: environment)
+        do {
+            try interpreter.executeBlock(withStatements: self.declaration.body, environment: environment)
+        } catch Return.withValue(let value) {
+            return value
+        } catch {
+            Dash.reportError(location: nil, message: "An error occurred")
+        }
+        
         return nil
     }
     

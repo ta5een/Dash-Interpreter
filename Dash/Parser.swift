@@ -168,6 +168,10 @@ private extension Parser {
             return try self.ifStatement()
         }
         
+        if self.match(.keyword(.return)) {
+            return try self.returnStatement()
+        }
+        
         if self.match(.keyword(.show)) {
             return try self.showStatement()
         }
@@ -246,6 +250,18 @@ private extension Parser {
         }
         
         return IfStmt(withCondition: condition, thenBranch: thenBranch, elseBranch: elseBranch)
+    }
+    
+    func returnStatement() throws -> Stmt {
+        let keyword = self.previous()
+        var value: Expr? = nil
+        
+        if !self.check(.char(.semicolon)) {
+            value = try self.expression()
+        }
+        
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after return value.")
+        return ReturnStmt(withKeyword: keyword, value: value)
     }
     
     func showStatement() throws -> Stmt {

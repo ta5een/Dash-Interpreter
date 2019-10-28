@@ -9,7 +9,15 @@
 import Foundation
 
 class ReturnStmt: Stmt {
+    let keyword: Token
+    let value: Expr?
+    
+    init(withKeyword keyword: Token, value: Expr?) {
+        self.keyword = keyword
+        self.value = value
+    }
+    
     func accept<V: StmtVisitor>(visitor: V) throws -> V.StmtResult {
-        fatalError("Unimplemented")
+        return try visitor.visitReturnStmt(stmt: self)
     }
 }

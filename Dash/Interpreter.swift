@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum Return: Error {
+    case withValue(_ value: Any?)
+}
+
 enum RuntimeError: Error {
     case invalidOperand(token: Token, message: String, help: String? = nil)
     case invalidCall(token: Token, message: String, help: String? = nil)
@@ -46,13 +50,17 @@ class Interpreter {
         try stmt.accept(visitor: self)
     }
     
-    func executeBlock(withStatements statements: [Stmt], environment: Environment) {
+    func executeBlock(withStatements statements: [Stmt], environment: Environment) throws {
         let previous = self.environment
         defer { self.environment = previous }
         
         do {
             self.environment = environment
             try statements.forEach { try self.execute(stmt: $0) }
+        } catch let error as RuntimeError {
+            Dash.reportRuntimeError(error: error)
+        } catch let error as Return {
+            throw error
         } catch {
             Dash.reportError(location: nil, message: "Failed to execute statement(s) in current environment scope.")
         }
@@ -233,7 +241,7 @@ extension Interpreter: StmtVisitor {
     typealias StmtResult = Void
     
     func visitBlockStmt(stmt: BlockStmt) throws -> StmtResult {
-        self.executeBlock(withStatements: stmt.statements, environment: Environment(withEnclosingEnvironment: self.environment))
+        try self.executeBlock(withStatements: stmt.statements, environment: Environment(withEnclosingEnvironment: self.environment))
     }
     
     func visitClassStmt(stmt: ClassStmt) throws -> StmtResult {
@@ -258,7 +266,12 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitReturnStmt(stmt: ReturnStmt) throws -> StmtResult {
-        fatalError("Unimplemented")
+        var value: Any? = nil
+        if let stmtVal = stmt.value {
+            value = try self.evaluate(expr: stmtVal)
+        }
+        
+        throw Return.withValue(value)
     }
     
     func visitShowStmt(stmt: ShowStmt) throws -> StmtResult {
