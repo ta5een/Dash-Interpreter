@@ -123,7 +123,6 @@
 		032A66292357384200226228 /* Expr */ = {
 			isa = PBXGroup;
 			children = (
-				032A663223573A8200226228 /* AstPrinter.swift */,
 				0318A92A235703EA00C3CBD4 /* Expr.swift */,
 				03A97EFC23644237008F25EA /* AssignExpr.swift */,
 				032A662A2357385100226228 /* BinaryExpr.swift */,
@@ -139,6 +138,7 @@
 		03943BCE23560AD9008AEC9E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				032A663223573A8200226228 /* AstPrinter.swift */,
 				039CB08E235608D2002D6F59 /* Errors.swift */,
 				03D9EF262356CA23009BC05A /* Extensions.swift */,
 				039CB08C235607E7002D6F59 /* SysArgs.swift */,
