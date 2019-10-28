@@ -112,6 +112,10 @@ private extension Parser {
     }
     
     func statement() throws -> Stmt {
+        if self.match(.keyword(.for)) {
+            return try self.forStatement()
+        }
+        
         if self.match(.keyword(.if)) {
             return try self.ifStatement()
         }
@@ -133,9 +137,53 @@ private extension Parser {
     
     func expressionStatement() throws -> Stmt {
         let expr = try self.expression()
-        try self.consume(type: .char(.semicolon), message: "Expected `;` after value")
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after value.")
         
         return ExpressionStmt(withExpr: expr)
+    }
+    
+    func forStatement() throws -> Stmt {
+        try self.consume(type: .char(.leftParen), message: "Expected `(` after 'for'.")
+        
+        var initialiser: Stmt?
+        if self.match(.char(.semicolon)) {
+            initialiser = nil
+        } else if self.match(.keyword(.var)) {
+            initialiser = try self.varDeclaration()
+        } else {
+            initialiser = try self.expressionStatement()
+        }
+        
+        var condition: Expr?
+        if !self.check(.char(.semicolon)) {
+            condition = try self.expression()
+        }
+        
+        try self.consume(type: .char(.semicolon), message: "Expected `;` after loop condition.")
+        
+        var increment: Expr?
+        if !self.check(.char(.rightParen)) {
+            increment = try self.expression()
+        }
+        
+        try self.consume(type: .char(.rightParen), message: "Expected `)` after for-loop clause.")
+        
+        var body = try self.statement()
+        if let increment = increment {
+            // Append the "increment" statement after the body of the for-loop block statement
+            body = BlockStmt(withStatements: [body, ExpressionStmt(withExpr: increment)])
+        }
+        
+        // Set the body to a basic while loop with the condition being the condition given, otherwise the value `true`
+        // to iterate infinitely (or until broken).
+        body = WhileStmt(withCondition: condition ?? LiteralExpr(withValue: true), body: body)
+       
+        if let initialiser = initialiser {
+            // If there is an intialiser, append the initialiser statement before the newly-constructed while-loop body.
+            body = BlockStmt(withStatements: [initialiser, body])
+        }
+        
+        return body
     }
     
     func ifStatement() throws -> Stmt {
