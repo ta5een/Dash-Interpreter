@@ -3,21 +3,28 @@
 ```
 program        → declaration* EOF ;
 
-declaration    → varDecl
+declaration    → funDecl
+               | varDecl
                | statement ;
-               
+
+funDecl        → "fun" function ;
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 statement      → exprStmt
                | forStmt
                | ifStmt
-               | printStmt
+               | returnStmt
+               | showStmt
                | whileStmt
                | block ;
-               
+
+function       → IDENTIFIER "(" parameters? ")" block ;
+parameters     → IDENTIFIER ( "," IDENTIFIER )* ;
+
 exprStmt       → expression (";" | "\n") ;
 forStmt        → "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
 ifStmt         → "if" "(" expression ")" statement ( "else" statement )? ;
-printStmt      → "print" expression (";"| "\n") ;
+returnStmt     → "return" expression? ";" ;
+showStmt       → "show" expression (";"| "\n") ;
 whileStmt      → "while" "(" expression ")" statement ;
 block          → "{" declaration* "}" ;
 
@@ -33,6 +40,7 @@ multiplication → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | call ;
 call           → primary ( "(" arguments? ")" )* ;
+arguments      → expression ( "," expression )* ;
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING
                | "(" expression ")"
