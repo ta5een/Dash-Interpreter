@@ -96,7 +96,7 @@ class Token {
         self.lexeme = lexeme
         self.literal = literal
         self.line = line
-        self.column = column
+        self.column = column - 1
     }
 }
 

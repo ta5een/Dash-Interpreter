@@ -85,16 +85,18 @@ class PrintLnNativeFun: Callable, CustomStringConvertible {
 }
 
 class Function: Callable, CustomStringConvertible {
-    var declaration: FunctionStmt
+    let declaration: FunctionStmt
+    let closure: Environment
     var arity: Int
     
-    init(withDeclaration declaration: FunctionStmt) {
+    init(withDeclaration declaration: FunctionStmt, closure: Environment) {
         self.declaration = declaration
+        self.closure = closure
         self.arity = declaration.params.count
     }
     
     func call(interpreter: Interpreter, arguments: [Any?]) -> Any? {
-        let environment = Environment(withEnclosingEnvironment: interpreter.globals)
+        let environment = Environment(withEnclosingEnvironment: self.closure)
         for (i, param) in self.declaration.params.enumerated() {
             environment.define(name: param.lexeme, withValue: arguments[i])
         }

@@ -253,7 +253,7 @@ extension Interpreter: StmtVisitor {
     }
     
     func visitFunctionStmt(stmt: FunctionStmt) throws -> StmtResult {
-        let function = Function(withDeclaration: stmt)
+        let function = Function(withDeclaration: stmt, closure: self.environment)
         self.environment.define(name: stmt.name.lexeme, withValue: function)
     }
     
