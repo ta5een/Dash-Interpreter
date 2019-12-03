@@ -148,7 +148,7 @@ private extension Parser {
     }
     
     func varDeclaration() throws -> Stmt {
-        let name = try self.consume(type: .literal(.identifier), message: "Expected variables name")
+        let name = try self.consume(type: .literal(.identifier), message: "Expected variable name")
         
         var initialiser: Expr? = nil
         if (self.match(.char(.equal))) {
@@ -324,9 +324,9 @@ private extension Parser {
         var expr = try self.and()
         
         while self.match(.keyword(.or)) {
-            let `operator` = self.previous()
+            let op = self.previous()
             let right = try self.and()
-            expr = LogicalExpr(left: expr, operator: `operator`, right: right)
+            expr = LogicalExpr(left: expr, operator: op, right: right)
         }
         
         return expr
@@ -336,9 +336,9 @@ private extension Parser {
         var expr = try self.equality()
         
         while self.match(.keyword(.and)) {
-            let `operator` = self.previous()
+            let op = self.previous()
             let right = try self.equality()
-            expr = LogicalExpr(left: expr, operator: `operator`, right: right)
+            expr = LogicalExpr(left: expr, operator: op, right: right)
         }
         
         return expr
