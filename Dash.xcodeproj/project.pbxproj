@@ -218,7 +218,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Ta-Seen Islam";
 				TargetAttributes = {
 					039CB07F2355FDF5002D6F59 = {
@@ -401,6 +401,7 @@
 		039CB0882355FDF5002D6F59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6U57XLHZD;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -412,6 +413,7 @@
 		039CB0892355FDF5002D6F59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6U57XLHZD;
 				ENABLE_HARDENED_RUNTIME = YES;
